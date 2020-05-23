@@ -237,6 +237,7 @@
                 android:background="@null"
                 android:gravity="center_horizontal"
                 android:hint="@string/design_change_and_error"
+                android:layout_margin="10dp"
                 android:paddingTop="50dp"
                 android:paddingBottom="50dp" />
 
@@ -254,6 +255,7 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:gravity="center_horizontal"
+                android:layout_margin="10dp"
                 android:hint="@string/contract_change_and_violation"
                 android:paddingTop="50dp"
                 android:paddingBottom="50dp" />
@@ -272,6 +274,7 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:gravity="center_horizontal"
+                android:layout_margin="10dp"
                 android:hint="@string/inevitable_clause"
                 android:paddingTop="50dp"
                 android:paddingBottom="50dp" />
@@ -290,6 +293,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
+                android:layout_margin="10dp"
                 android:gravity="center_horizontal"
                 android:hint="@string/concurrent_occurrence"
                 android:paddingTop="50dp"
