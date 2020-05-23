@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">accident_management</string>
+    <string name="register">등록</string>
+    <string name="inquire">조회</string>
 </resources>

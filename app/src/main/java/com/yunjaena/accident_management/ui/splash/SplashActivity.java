@@ -16,6 +16,10 @@ public class SplashActivity extends ActivityBase {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.acitity_splash);
-        new Handler().postDelayed(() -> startActivity(new Intent(SplashActivity.this, MainActivity.class)), 2000);
+        new Handler().postDelayed(() -> {
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    finish();
+                }
+                , 2000);
     }
 }
