@@ -1,10 +1,13 @@
-package com.yunjaena.accident_management;
+package com.yunjaena.accident_management.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+import com.yunjaena.accident_management.R;
+import com.yunjaena.core.activity.ActivityBase;
+
+public class MainActivity extends ActivityBase {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
