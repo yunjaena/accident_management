@@ -11,12 +11,18 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yunjaena.accident_management.R;
+import com.yunjaena.accident_management.ui.resgister.presenter.RegisterContract;
+import com.yunjaena.accident_management.ui.resgister.presenter.RegisterPresenter;
 import com.yunjaena.core.activity.ActivityBase;
+import com.yunjaena.core.toast.ToastUtil;
 
-public class RegisterActivity extends ActivityBase {
+public class RegisterActivity extends ActivityBase implements RegisterContract.View {
+    public static final String TAG = "RegisterActivity";
+    private RegisterPresenter registerPresenter;
     private EditText companyNameEditText;
     private EditText accidentDateEditText;
     private Spinner constructionTypeSpinner;
@@ -37,6 +43,7 @@ public class RegisterActivity extends ActivityBase {
     }
 
     public void init() {
+        registerPresenter = new RegisterPresenter(this);
         initView();
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.register);
@@ -64,21 +71,22 @@ public class RegisterActivity extends ActivityBase {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_register, menu) ;
+        getMenuInflater().inflate(R.menu.menu_register, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_save:
+                save();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void save(){
+    public void save() {
 
     }
 
@@ -97,7 +105,7 @@ public class RegisterActivity extends ActivityBase {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() > 0) {
-                    editText.setGravity(Gravity.LEFT | Gravity.TOP);
+                    editText.setGravity(Gravity.START | Gravity.TOP);
                 } else {
                     editText.setGravity(Gravity.CENTER);
                 }
@@ -105,4 +113,39 @@ public class RegisterActivity extends ActivityBase {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        registerPresenter.releaseView();
+    }
+
+    @Override
+    public void showProgress(String message) {
+        showProgressDialog(message);
+    }
+
+    @Override
+    public void showProgress(@StringRes int message) {
+        showProgressDialog(message);
+    }
+
+    @Override
+    public void hideProgress() {
+        hideProgressDialog();
+    }
+
+    @Override
+    public void showMessage(String message) {
+        ToastUtil.getInstance().makeShort(message);
+    }
+
+    @Override
+    public void showMessage(int message) {
+        ToastUtil.getInstance().makeShort(message);
+    }
+
+    @Override
+    public void setPresenter(RegisterPresenter presenter) {
+        this.registerPresenter = presenter;
+    }
 }

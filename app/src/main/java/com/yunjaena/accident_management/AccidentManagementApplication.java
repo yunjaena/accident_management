@@ -3,6 +3,7 @@ package com.yunjaena.accident_management;
 import android.app.Application;
 import android.content.Context;
 
+import com.yunjaena.accident_management.repository.database.ReportDBHelper;
 import com.yunjaena.core.toast.ToastUtil;
 
 public class AccidentManagementApplication  extends Application {
@@ -17,5 +18,6 @@ public class AccidentManagementApplication  extends Application {
 
     private void init(){
         ToastUtil.getInstance().init(applicationContext);
+        ReportDBHelper.getInstance(applicationContext);
     }
 }

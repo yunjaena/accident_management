@@ -3,7 +3,7 @@
     <string name="register">등록</string>
     <string name="inquire">조회</string>
     <string name="save">저장</string>
-    <string name="company_name">  업 체 명  </string>
+    <string name="company_name">업 체 명</string>
     <string name="accident_date">발생 일자</string>
     <string name="construction_type">공사 종류</string>
     <string name="delay_cause">지연 원인</string>
