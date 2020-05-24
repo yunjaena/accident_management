@@ -15,5 +15,7 @@ public interface RegisterContract {
         void showMessage(String message);
 
         void showMessage(@StringRes int message);
+
+        void showSuccessSaved();
     }
 }

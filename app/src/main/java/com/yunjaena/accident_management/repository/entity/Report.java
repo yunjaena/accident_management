@@ -1,5 +1,7 @@
 package com.yunjaena.accident_management.repository.entity;
 
+import android.graphics.Bitmap;
+
 import com.yunjaena.accident_management.util.DateUtil;
 
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ public class Report {
     private String updateDate;
     private String companyName;
     private String accidentDate;
+    private String constructType;
     private String delayCause;
     private String savePath;
     private String designChangeAndError;
@@ -18,6 +21,7 @@ public class Report {
     private String inevitableClause;
     private String concurrentOccurrence;
     private List<String> imageFileName;
+    private List<Bitmap> imageBitmap;
     private boolean isDelete;
 
     public Report() {
@@ -29,6 +33,14 @@ public class Report {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getConstructType() {
+        return constructType;
+    }
+
+    public void setConstructType(String constructType) {
+        this.constructType = constructType;
     }
 
     public String getCompanyName() {
@@ -127,12 +139,23 @@ public class Report {
         this.updateDate = updateDate;
     }
 
+    public List<Bitmap> getImageBitmap() {
+        return imageBitmap;
+    }
+
+    public void setImageBitmap(List<Bitmap> imageBitmap) {
+        this.imageBitmap = imageBitmap;
+    }
+
     @Override
     public String toString() {
         return "Report{" +
                 "id=" + id +
+                ", saveDate='" + saveDate + '\'' +
+                ", updateDate='" + updateDate + '\'' +
                 ", companyName='" + companyName + '\'' +
                 ", accidentDate='" + accidentDate + '\'' +
+                ", constructType='" + constructType + '\'' +
                 ", delayCause='" + delayCause + '\'' +
                 ", savePath='" + savePath + '\'' +
                 ", designChangeAndError='" + designChangeAndError + '\'' +
@@ -140,10 +163,10 @@ public class Report {
                 ", inevitableClause='" + inevitableClause + '\'' +
                 ", concurrentOccurrence='" + concurrentOccurrence + '\'' +
                 ", imageFileName=" + imageFileName +
+                ", imageBitmap=" + imageBitmap +
                 ", isDelete=" + isDelete +
                 '}';
     }
-
 
     public static class Builder {
         private int id;
@@ -152,12 +175,14 @@ public class Report {
         private String companyName = "";
         private String accidentDate = "";
         private String delayCause = "";
+        private String constructType = "";
         private String savePath = "";
         private String designChangeAndError = "";
         private String contractChangeAndViolation = "";
         private String inevitableClause = "";
         private String concurrentOccurrence = "";
         private List<String> imageFileName = new ArrayList<>();
+        private List<Bitmap> imageBitmap = new ArrayList<>();
         private boolean isDelete = false;
 
         public Builder() {
@@ -170,6 +195,11 @@ public class Report {
 
         public Builder saveDate(String saveDate) {
             this.saveDate = saveDate;
+            return this;
+        }
+
+        public Builder constructType(String constructType) {
+            this.constructType = constructType;
             return this;
         }
 
@@ -228,6 +258,11 @@ public class Report {
             return this;
         }
 
+        public Builder imageBitmap(List<Bitmap> imageBitmap) {
+            this.imageBitmap.addAll(imageBitmap);
+            return this;
+        }
+
         public Report build() {
             return new Report(this);
         }
@@ -242,12 +277,14 @@ public class Report {
         this.companyName = builder.companyName;
         this.accidentDate = builder.accidentDate;
         this.delayCause = builder.delayCause;
+        this.constructType = builder.constructType;
         this.savePath = builder.savePath;
         this.designChangeAndError = builder.designChangeAndError;
         this.contractChangeAndViolation = builder.contractChangeAndViolation;
         this.inevitableClause = builder.inevitableClause;
         this.concurrentOccurrence = builder.concurrentOccurrence;
         this.imageFileName = builder.imageFileName;
+        this.imageBitmap = builder.imageBitmap;
         this.isDelete = builder.isDelete;
     }
 }

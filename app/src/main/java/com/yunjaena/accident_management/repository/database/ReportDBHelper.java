@@ -21,13 +21,19 @@ public class ReportDBHelper extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "Report";
     public static final int DB_VERSION = 1;
     private static ReportDBHelper instance;
+    private static Context context;
     private SQLiteDatabase sqLiteDatabase;
 
-    public static ReportDBHelper getInstance(Context context) {
+
+    public static ReportDBHelper getInstance() {
         if (instance == null) {
             instance = new ReportDBHelper(context.getApplicationContext());
         }
         return instance;
+    }
+
+    public static void init(Context applicationContext) {
+        context = applicationContext;
     }
 
 

@@ -3,6 +3,9 @@
     <string name="register">등록</string>
     <string name="inquire">조회</string>
     <string name="save">저장</string>
+    <string name="okay">확인</string>
+    <string name="cancel">취소</string>
+    <string name="saving">저장중</string>
     <string name="company_name">업 체 명</string>
     <string name="accident_date">발생 일자</string>
     <string name="construction_type">공사 종류</string>
@@ -12,5 +15,18 @@
     <string name="contract_change_and_violation">계약 변경 및 위반</string>
     <string name="inevitable_clause">불가항적 조항</string>
     <string name="concurrent_occurrence">동시지연 발생</string>
+    <string name="image_fail">이미지를 불러오는것에 실패했습니다.</string>
     <string name="input_place">입력란</string>
+    <string name="input_all_waring">전체 항목을 입력하셨는지 확인해주세요.</string>
+    <string name="input_picture_waring">사진을 1장이상 첨부해주세요.</string>
+    <string name="saved_failed">저장에 실패했습니다.</string>
+    <string name="need_write_permission_title">쓰기 권한</string>
+    <string name="select">선택</string>
+    <string name="select_gallery_or_photo">갤러리 또는 카메라를 선택해주세요.</string>
+    <string name="need_write_permission">해당 기능을 사용하기 위해 쓰기 권한이 필요합니다.</string>
+    <string name="choose">선택</string>
+    <string name="camera">카메라</string>
+    <string name="gallery">갤러리</string>
+    <string name="image_cancel">취소 되었습니다.</string>
+    <string name="image_over_select_warning">장 이상 선택하실 수 없습니다.</string>
 </resources>

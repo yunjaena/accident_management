@@ -4,9 +4,10 @@ import android.app.Application;
 import android.content.Context;
 
 import com.yunjaena.accident_management.repository.database.ReportDBHelper;
+import com.yunjaena.accident_management.util.ImageUtil;
 import com.yunjaena.core.toast.ToastUtil;
 
-public class AccidentManagementApplication  extends Application {
+public class AccidentManagementApplication extends Application {
     private Context applicationContext;
 
     @Override
@@ -16,8 +17,9 @@ public class AccidentManagementApplication  extends Application {
         init();
     }
 
-    private void init(){
+    private void init() {
         ToastUtil.getInstance().init(applicationContext);
-        ReportDBHelper.getInstance(applicationContext);
+        ReportDBHelper.init(applicationContext);
+        ImageUtil.init(applicationContext);
     }
 }
