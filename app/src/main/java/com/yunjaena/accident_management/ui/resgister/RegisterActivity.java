@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -17,12 +16,12 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
@@ -34,7 +33,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.bumptech.glide.Glide;
 import com.yunjaena.accident_management.R;
 import com.yunjaena.accident_management.repository.entity.Report;
 import com.yunjaena.accident_management.repository.source.ReportRepository;
@@ -49,7 +48,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RegisterActivity extends ActivityBase implements RegisterContract.View{
+public class RegisterActivity extends ActivityBase implements RegisterContract.View, View.OnClickListener {
     public static final String TAG = "RegisterActivity";
     public static final int MAX_IMAGE_SELECT = 10;
     public static final int GALLERY_IMAGE_REQUEST = 1;
@@ -62,11 +61,15 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     private Spinner constructionTypeSpinner;
     private Spinner registerDelayCauseSpinner;
     private Spinner savePathSpinner;
+    private RecyclerView cameraRecyclerView;
+    private LinearLayout cameraLinearLayout;
+    private ImageView cameraImageView;
     private File currentPhotoFile;
     private EditText designChangeAndErrorEditText;
     private EditText contractChangeAndViolationEditText;
     private EditText inevitableClauseEditText;
     private EditText concurrentOccurrenceEditText;
+    private List<Bitmap> bitmapList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,10 +97,15 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         contractChangeAndViolationEditText = findViewById(R.id.register_contract_change_and_violation_edit_text);
         inevitableClauseEditText = findViewById(R.id.register_inevitable_clause_edit_text);
         concurrentOccurrenceEditText = findViewById(R.id.register_concurrent_occurrence_edit_text);
+        cameraRecyclerView = findViewById(R.id.register_camera_recycler_view);
+        cameraLinearLayout = findViewById(R.id.register_camera_linear_layout);
+        cameraImageView = findViewById(R.id.register_camera_image_view);
         setEditTextGravityStartWhenLengthOverZero(designChangeAndErrorEditText);
         setEditTextGravityStartWhenLengthOverZero(contractChangeAndViolationEditText);
         setEditTextGravityStartWhenLengthOverZero(inevitableClauseEditText);
         setEditTextGravityStartWhenLengthOverZero(concurrentOccurrenceEditText);
+        bitmapList = new ArrayList<>();
+        cameraLinearLayout.setOnClickListener(this);
     }
 
 
@@ -387,6 +395,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             if (data != null) {
                 if (data.getClipData() == null) {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), data.getData());
+                    bitmapList.add(bitmap);
                 } else {
                     ClipData clipData = data.getClipData();
                     if (clipData.getItemCount() > 10) {
@@ -395,10 +404,12 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
                     } else if (clipData.getItemCount() == 1) {
                         Uri uri = clipData.getItemAt(0).getUri();
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+                        bitmapList.add(bitmap);
                     } else if (clipData.getItemCount() > 1 && clipData.getItemCount() < 10) {
                         for (int i = 0; i < clipData.getItemCount(); i++) {
                             Uri uri = clipData.getItemAt(i).getUri();
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+                            bitmapList.add(bitmap);
                         }
                     }
                 }
@@ -414,6 +425,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             String filePath = currentPhotoFile.getAbsolutePath();
             if (filePath != null) {
                 Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                bitmapList.add(bitmap);
                 updateUI();
             }
         } catch (Exception e) {
@@ -422,10 +434,19 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     }
 
     public void updateUI() {
-//        if (bitmapList.size() < 1) {
-//            cameraLinearLayout.setVisibility(View.VISIBLE);
-//        } else {
-//            cameraLinearLayout.setVisibility(View.GONE);
-//        }
+        if (bitmapList.size() < 1) {
+            cameraLinearLayout.setVisibility(View.VISIBLE);
+        } else {
+            cameraLinearLayout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.register_camera_linear_layout:
+                showCameraOrGallerySelectDialog();
+                break;
+        }
     }
 }
