@@ -9,4 +9,10 @@ public class DateUtil {
         Date time = new Date();
         return format.format(time);
     }
+
+    public static String getCurrentDateWithOutTime(){
+        SimpleDateFormat format = new SimpleDateFormat ( "yyyy-MM-dd");
+        Date time = new Date();
+        return format.format(time);
+    }
 }

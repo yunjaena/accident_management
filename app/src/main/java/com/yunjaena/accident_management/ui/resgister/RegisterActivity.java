@@ -3,6 +3,7 @@ package com.yunjaena.accident_management.ui.resgister;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
@@ -20,10 +21,13 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,20 +37,23 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.yunjaena.accident_management.R;
 import com.yunjaena.accident_management.repository.entity.Report;
 import com.yunjaena.accident_management.repository.source.ReportRepository;
 import com.yunjaena.accident_management.ui.resgister.presenter.RegisterContract;
 import com.yunjaena.accident_management.ui.resgister.presenter.RegisterPresenter;
+import com.yunjaena.accident_management.util.ConstructType;
 import com.yunjaena.accident_management.util.DateUtil;
 import com.yunjaena.core.activity.ActivityBase;
 import com.yunjaena.core.toast.ToastUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class RegisterActivity extends ActivityBase implements RegisterContract.View, View.OnClickListener {
     public static final String TAG = "RegisterActivity";
@@ -56,11 +63,17 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     private Context context;
     private String currentPhotoPath;
     private RegisterPresenter registerPresenter;
+    private LinearLayout registerConstructionTypeLinearLayout;
+    private LinearLayout registerConstructionTypeSpecificLinearLayout;
     private EditText companyNameEditText;
-    private EditText accidentDateEditText;
+    private TextView accidentDateTextView;
     private Spinner constructionTypeSpinner;
-    private Spinner registerDelayCauseSpinner;
-    private Spinner savePathSpinner;
+    private Spinner constructionTypeSpecificSpinner;
+    private Spinner registerDelayCauseOneSpinner;
+    private Spinner registerDelayCauseOneSpecificSpinner;
+    private Spinner registerDelayCauseTwoSpinner;
+    private Spinner registerDelayCauseTwoSpecificSpinner;
+    private TextView savePathTextView;
     private RecyclerView cameraRecyclerView;
     private LinearLayout cameraLinearLayout;
     private ImageView cameraImageView;
@@ -70,6 +83,25 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     private EditText inevitableClauseEditText;
     private EditText concurrentOccurrenceEditText;
     private List<Bitmap> bitmapList;
+
+    private String selectDate;
+    private int constructionType;
+    private int constructionTypeSpecific;
+    private int delayCause1;
+    private int delayCauseSpecific1;
+    private int delayCause2;
+    private int delayCauseSpecific2;
+    private int savePath;
+
+    public static int getResId(String resName, Class<?> c) {
+        try {
+            Field idField = c.getDeclaredField(resName);
+            return idField.getInt(idField);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,15 +116,31 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         initView();
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.register);
+        selectDate = DateUtil.getCurrentDateWithOutTime();
+        constructionType = 0;
+        constructionTypeSpecific = -1;
+        delayCause1 = -1;
+        delayCauseSpecific1 = -1;
+        delayCause2 = -1;
+        delayCauseSpecific2 = -1;
+        savePath = -1;
+
+        updateUI();
 
     }
 
     public void initView() {
+        registerConstructionTypeSpecificLinearLayout = findViewById(R.id.register_construction_type_specific_linear_layout);
+        registerConstructionTypeLinearLayout = findViewById(R.id.register_construction_type_linear_layout);
+        constructionTypeSpecificSpinner = findViewById(R.id.register_construction_type_specific_spinner);
         companyNameEditText = findViewById(R.id.register_company_name_edit_text);
-        accidentDateEditText = findViewById(R.id.register_accident_date_edit_text);
+        accidentDateTextView = findViewById(R.id.register_accident_date_text_view);
         constructionTypeSpinner = findViewById(R.id.register_construction_type_spinner);
-        registerDelayCauseSpinner = findViewById(R.id.register_delay_cause_spinner);
-        savePathSpinner = findViewById(R.id.register_save_path_spinner);
+        registerDelayCauseOneSpinner = findViewById(R.id.register_delay_cause_one_spinner);
+        registerDelayCauseOneSpecificSpinner = findViewById(R.id.register_delay_cause_specific_one_spinner);
+        registerDelayCauseTwoSpinner = findViewById(R.id.register_delay_cause_two_spinner);
+        registerDelayCauseTwoSpecificSpinner = findViewById(R.id.register_delay_cause_specific_two_spinner);
+        savePathTextView = findViewById(R.id.register_save_path_text_view);
         designChangeAndErrorEditText = findViewById(R.id.register_design_change_and_error_edit_text);
         contractChangeAndViolationEditText = findViewById(R.id.register_contract_change_and_violation_edit_text);
         inevitableClauseEditText = findViewById(R.id.register_inevitable_clause_edit_text);
@@ -106,15 +154,19 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         setEditTextGravityStartWhenLengthOverZero(concurrentOccurrenceEditText);
         bitmapList = new ArrayList<>();
         cameraLinearLayout.setOnClickListener(this);
-    }
+        accidentDateTextView.setOnClickListener(this);
 
+        /*Set Spinner*/
+        setConstructionTypeSpinner();
+        setConstructionTypeSpecificSpinner();
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_register, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -128,7 +180,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
 
     public void save() {
         String companyName = companyNameEditText.getText().toString().trim();
-        String accidentDate = accidentDateEditText.getText().toString().trim();
+        String accidentDate = accidentDateTextView.getText().toString().trim();
         String constructionType = "1";
         String registerDelayCause = "1";
         String savePath = "1";
@@ -226,7 +278,6 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
 
     }
 
-
     public void showCameraOrGallerySelectDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.select).setMessage(R.string.select_gallery_or_photo);
@@ -281,7 +332,6 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
 
         dispatchTakePictureIntent();
     }
-
 
     private File createImageFile() throws IOException {
         String timeStamp = DateUtil.getCurrentDate();
@@ -362,7 +412,6 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         }
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -434,6 +483,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     }
 
     public void updateUI() {
+        accidentDateTextView.setText(selectDate);
+
         if (bitmapList.size() < 1) {
             cameraLinearLayout.setVisibility(View.VISIBLE);
         } else {
@@ -447,6 +498,64 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             case R.id.register_camera_linear_layout:
                 showCameraOrGallerySelectDialog();
                 break;
+            case R.id.register_accident_date_text_view:
+                openCalendarView();
+                break;
         }
+    }
+
+    private void openCalendarView() {
+        String[] dateSplitString = selectDate.split("-");
+        int year = Integer.parseInt(dateSplitString[0]);
+        int month = Integer.parseInt(dateSplitString[1]);
+        int day = Integer.parseInt(dateSplitString[2]);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, yearSelect, monthSelect, daySelect) -> {
+            selectDate = String.format(Locale.KOREA, "%04d-%02d-%02d", yearSelect, monthSelect + 1, daySelect);
+            updateUI();
+        }, year, month - 1, day);
+
+        datePickerDialog.show();
+    }
+
+    public void setConstructionTypeSpinner() {
+        ArrayList arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.construction_type)));
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, arrayList);
+        constructionTypeSpinner.setAdapter(arrayAdapter);
+        constructionTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int index, long l) {
+                constructionType = index;
+                setConstructionTypeSpecificSpinner();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+    }
+
+    public void setConstructionTypeSpecificSpinner() {
+        if (ConstructType.childArrayResourceId(constructionType) == null) {
+            constructionTypeSpecific = -1;
+            registerConstructionTypeSpecificLinearLayout.setVisibility(View.GONE);
+            return;
+        }
+
+        registerConstructionTypeSpecificLinearLayout.setVisibility(View.VISIBLE);
+        int arrayId = getResId(ConstructType.childArrayResourceId(constructionType), R.array.class);
+        ArrayList arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(arrayId)));
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, arrayList);
+        constructionTypeSpecificSpinner.setAdapter(arrayAdapter);
+        constructionTypeSpecificSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int index, long l) {
+                constructionTypeSpecific = index;
+                updateUI();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
     }
 }
