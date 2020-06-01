@@ -42,7 +42,6 @@ import com.yunjaena.accident_management.repository.entity.Report;
 import com.yunjaena.accident_management.repository.source.ReportRepository;
 import com.yunjaena.accident_management.ui.resgister.presenter.RegisterContract;
 import com.yunjaena.accident_management.ui.resgister.presenter.RegisterPresenter;
-import com.yunjaena.accident_management.util.ConstructType;
 import com.yunjaena.accident_management.util.DateUtil;
 import com.yunjaena.core.activity.ActivityBase;
 import com.yunjaena.core.toast.ToastUtil;
@@ -65,6 +64,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     private RegisterPresenter registerPresenter;
     private LinearLayout registerConstructionTypeLinearLayout;
     private LinearLayout registerConstructionTypeSpecificLinearLayout;
+    private LinearLayout delayCauseOneSpecificLinearLayout;
+    private LinearLayout delayCauseTwoSpecificLinearLayout;
     private EditText companyNameEditText;
     private TextView accidentDateTextView;
     private Spinner constructionTypeSpinner;
@@ -112,18 +113,20 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
 
     public void init() {
         context = this;
+        selectDate = DateUtil.getCurrentDateWithOutTime();
+        constructionType = 0;
+        constructionTypeSpecific = -1;
+        delayCause1 = 0;
+        delayCauseSpecific1 = 0;
+        delayCause2 = -1;
+        delayCauseSpecific2 = -1;
+        savePath = -1;
+
         registerPresenter = new RegisterPresenter(this, new ReportRepository());
         initView();
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.register);
-        selectDate = DateUtil.getCurrentDateWithOutTime();
-        constructionType = 0;
-        constructionTypeSpecific = -1;
-        delayCause1 = -1;
-        delayCauseSpecific1 = -1;
-        delayCause2 = -1;
-        delayCauseSpecific2 = -1;
-        savePath = -1;
+
 
         updateUI();
 
@@ -148,6 +151,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         cameraRecyclerView = findViewById(R.id.register_camera_recycler_view);
         cameraLinearLayout = findViewById(R.id.register_camera_linear_layout);
         cameraImageView = findViewById(R.id.register_camera_image_view);
+        delayCauseOneSpecificLinearLayout = findViewById(R.id.register_delay_cause_specific_one_linear_layout);
+        delayCauseTwoSpecificLinearLayout = findViewById(R.id.register_delay_cause_specific_two_linear_layout);
         setEditTextGravityStartWhenLengthOverZero(designChangeAndErrorEditText);
         setEditTextGravityStartWhenLengthOverZero(contractChangeAndViolationEditText);
         setEditTextGravityStartWhenLengthOverZero(inevitableClauseEditText);
@@ -158,8 +163,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
 
         /*Set Spinner*/
         setConstructionTypeSpinner();
-        setConstructionTypeSpecificSpinner();
-
+        setRegisterDelayCauseOneSpinner();
+        setRegisterDelayCauseTwoSpinner();
     }
 
     @Override
@@ -532,6 +537,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+        constructionTypeSpinner.post(() -> constructionTypeSpinner.setSelection(constructionType));
     }
 
     public void setConstructionTypeSpecificSpinner() {
@@ -541,6 +547,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             return;
         }
 
+        constructionTypeSpecific = 0;
         registerConstructionTypeSpecificLinearLayout.setVisibility(View.VISIBLE);
         int arrayId = getResId(ConstructType.childArrayResourceId(constructionType), R.array.class);
         ArrayList arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(arrayId)));
@@ -550,12 +557,118 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int index, long l) {
                 constructionTypeSpecific = index;
-                updateUI();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+    }
+
+
+    public void setRegisterDelayCauseOneSpinner() {
+        ArrayList arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.delay_cause)));
+        arrayList.add(0, getResources().getString(R.string.none));
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, arrayList);
+        registerDelayCauseOneSpinner.setAdapter(arrayAdapter);
+        registerDelayCauseOneSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int index, long l) {
+                delayCause1 = index - 1;
+                delayCauseSpecific1 = 0;
+                setRegisterDelayCauseOneSpecificSpinner();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        registerDelayCauseOneSpinner.post(() -> registerDelayCauseOneSpinner.setSelection(delayCause1 + 1));
+    }
+
+    public void setRegisterDelayCauseOneSpecificSpinner() {
+        if (delayCause1 == -1) {
+            delayCauseSpecific1 = -1;
+            delayCauseOneSpecificLinearLayout.setVisibility(View.GONE);
+            updateSavePath();
+            return;
+        }
+
+        delayCauseOneSpecificLinearLayout.setVisibility(View.VISIBLE);
+        int arrayId = getResId(DelayCause.childArrayResourceId(delayCause1), R.array.class);
+        ArrayList arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(arrayId)));
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, arrayList);
+        registerDelayCauseOneSpecificSpinner.setAdapter(arrayAdapter);
+        registerDelayCauseOneSpecificSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int index, long l) {
+                delayCauseSpecific1 = index;
+                updateSavePath();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        updateSavePath();
+    }
+
+
+    public void setRegisterDelayCauseTwoSpinner() {
+        ArrayList arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.delay_cause)));
+        arrayList.add(0, getResources().getString(R.string.none));
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, arrayList);
+        registerDelayCauseTwoSpinner.setAdapter(arrayAdapter);
+        registerDelayCauseTwoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int index, long l) {
+                delayCause2 = index - 1;
+                delayCauseSpecific2 = 0;
+                setRegisterDelayCauseTwoSpecificSpinner();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        registerDelayCauseTwoSpinner.post(() -> registerDelayCauseTwoSpinner.setSelection(delayCause2 + 1));
+    }
+
+    public void setRegisterDelayCauseTwoSpecificSpinner() {
+        if (delayCause2 == -1) {
+            delayCauseSpecific2 = -1;
+            delayCauseTwoSpecificLinearLayout.setVisibility(View.GONE);
+            updateSavePath();
+            return;
+        }
+
+        delayCauseTwoSpecificLinearLayout.setVisibility(View.VISIBLE);
+        int arrayId = getResId(DelayCause.childArrayResourceId(delayCause2), R.array.class);
+        ArrayList arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(arrayId)));
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, arrayList);
+        registerDelayCauseTwoSpecificSpinner.setAdapter(arrayAdapter);
+        registerDelayCauseTwoSpecificSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int index, long l) {
+                delayCauseSpecific2 = index;
+                updateSavePath();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        updateSavePath();
+    }
+
+    public void updateSavePath() {
+        String toast = String.format("type1: %d, type2 : %d, delay1 : %d, delay1Spec : %d, delay2 : %d, delay2Spec : %d", constructionType, constructionTypeSpecific, delayCause1, delayCauseSpecific1, delayCause2, delayCauseSpecific2);
+        ToastUtil.getInstance().makeLong(toast);
+        String[] savePathStringArray = getResources().getStringArray(R.array.save_path);
+        savePath = SavePath.getSavePath(delayCause1, delayCauseSpecific1, delayCause2, delayCauseSpecific2);
+        if (savePath == -1)
+            savePathTextView.setText("");
+        else
+            savePathTextView.setText(savePathStringArray[savePath]);
     }
 }

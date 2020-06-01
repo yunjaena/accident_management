@@ -31,4 +31,5 @@
     <string name="gallery">갤러리</string>
     <string name="image_cancel">취소 되었습니다.</string>
     <string name="image_over_select_warning">장 이상 선택하실 수 없습니다.</string>
+    <string name="none">없음</string>
 </resources>

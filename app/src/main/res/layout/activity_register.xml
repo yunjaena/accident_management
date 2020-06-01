@@ -45,6 +45,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp"
+                    android:textColor="@color/black"
                     android:background="@null"
                     android:hint="@string/input_place"
                     android:singleLine="true" />
@@ -83,10 +84,11 @@
                     android:id="@+id/register_accident_date_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:layout_margin="10dp"
                     android:gravity="center_vertical"
                     android:singleLine="true"
+                    android:textColor="@color/black"
                     tools:text = "2020-05-30"
                     />
 
@@ -207,6 +209,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/register_delay_cause_specific_one_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -282,6 +285,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/register_delay_cause_specific_two_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -352,7 +356,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
                     android:layout_margin="10dp" />
 
             </LinearLayout>

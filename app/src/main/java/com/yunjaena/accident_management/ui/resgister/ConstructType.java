@@ -1,4 +1,4 @@
-package com.yunjaena.accident_management.util;
+package com.yunjaena.accident_management.ui.resgister;
 
 public enum ConstructType {
     TEMPORARY_WORK(0, false, null),
