@@ -18,6 +18,7 @@
     <string name="inevitable_clause">불가항적 조항</string>
     <string name="concurrent_occurrence">동시지연 발생</string>
     <string name="image_fail">이미지를 불러오는것에 실패했습니다.</string>
+    <string name="error_same_delay_cause">지연원인이 동일합니다.</string>
     <string name="input_place">입력란</string>
     <string name="input_all_waring">전체 항목을 입력하셨는지 확인해주세요.</string>
     <string name="input_picture_waring">사진을 1장이상 첨부해주세요.</string>
@@ -25,6 +26,8 @@
     <string name="need_write_permission_title">쓰기 권한</string>
     <string name="select">선택</string>
     <string name="select_gallery_or_photo">갤러리 또는 카메라를 선택해주세요.</string>
+    <string name="delete_image">이미지 삭제</string>
+    <string name="ask_delete_image">이미지를 삭제하시겠습니까?</string>
     <string name="need_write_permission">해당 기능을 사용하기 위해 쓰기 권한이 필요합니다.</string>
     <string name="choose">선택</string>
     <string name="camera">카메라</string>

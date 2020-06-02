@@ -371,8 +371,9 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/register_camera_recycler_view"
+                android:layout_gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:id="@+id/register_camera_linear_layout"

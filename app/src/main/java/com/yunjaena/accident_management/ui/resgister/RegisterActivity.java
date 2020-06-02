@@ -35,15 +35,18 @@ import androidx.annotation.StringRes;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yunjaena.accident_management.R;
 import com.yunjaena.accident_management.repository.entity.Report;
 import com.yunjaena.accident_management.repository.source.ReportRepository;
+import com.yunjaena.accident_management.ui.resgister.adapter.RegisterImageAdapter;
 import com.yunjaena.accident_management.ui.resgister.presenter.RegisterContract;
 import com.yunjaena.accident_management.ui.resgister.presenter.RegisterPresenter;
 import com.yunjaena.accident_management.util.DateUtil;
 import com.yunjaena.core.activity.ActivityBase;
+import com.yunjaena.core.recyclerview.RecyclerViewClickListener;
 import com.yunjaena.core.toast.ToastUtil;
 
 import java.io.File;
@@ -84,6 +87,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     private EditText inevitableClauseEditText;
     private EditText concurrentOccurrenceEditText;
     private List<Bitmap> bitmapList;
+    private RegisterImageAdapter registerImageAdapter;
+    private LinearLayoutManager linearLayoutManager;
 
     private String selectDate;
     private int constructionType;
@@ -160,11 +165,35 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         bitmapList = new ArrayList<>();
         cameraLinearLayout.setOnClickListener(this);
         accidentDateTextView.setOnClickListener(this);
+        setCameraRecyclerView();
 
         /*Set Spinner*/
         setConstructionTypeSpinner();
         setRegisterDelayCauseOneSpinner();
         setRegisterDelayCauseTwoSpinner();
+    }
+
+    public void setCameraRecyclerView() {
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        registerImageAdapter = new RegisterImageAdapter(this, bitmapList);
+        registerImageAdapter.setRecyclerViewClickListener(new RecyclerViewClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                if(position >= bitmapList.size()){
+                    showCameraOrGallerySelectDialog();
+                    return;
+                }
+                showImageDeleteDialog(position);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        });
+        cameraRecyclerView.setLayoutManager(linearLayoutManager);
+        cameraRecyclerView.setAdapter(registerImageAdapter);
+        registerImageAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -309,6 +338,19 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         builder.setNegativeButton(R.string.cancel, (dialog, id) -> {
             ToastUtil.getInstance().makeShort(R.string.need_write_permission);
         });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    public void showImageDeleteDialog(int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.delete_image).setMessage(R.string.ask_delete_image);
+        builder.setPositiveButton(R.string.okay, (dialog, id) -> {
+            bitmapList.remove(position);
+            registerImageAdapter.notifyDataSetChanged();
+            updateUI();
+        });
+        builder.setNegativeButton(R.string.cancel, null);
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
@@ -495,6 +537,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         } else {
             cameraLinearLayout.setVisibility(View.GONE);
         }
+        registerImageAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -662,8 +705,12 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     }
 
     public void updateSavePath() {
-        String toast = String.format("type1: %d, type2 : %d, delay1 : %d, delay1Spec : %d, delay2 : %d, delay2Spec : %d", constructionType, constructionTypeSpecific, delayCause1, delayCauseSpecific1, delayCause2, delayCauseSpecific2);
-        ToastUtil.getInstance().makeLong(toast);
+        if(delayCause1 == delayCause2 && delayCauseSpecific1 == delayCauseSpecific2) {
+            ToastUtil.getInstance().makeShort(R.string.error_same_delay_cause);
+            savePathTextView.setText("");
+            savePath = -1;
+            return;
+        }
         String[] savePathStringArray = getResources().getStringArray(R.array.save_path);
         savePath = SavePath.getSavePath(delayCause1, delayCauseSpecific1, delayCause2, delayCauseSpecific2);
         if (savePath == -1)
