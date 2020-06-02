@@ -40,7 +40,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.yunjaena.accident_management.R;
 import com.yunjaena.accident_management.data.network.entity.Report;
-import com.yunjaena.accident_management.data.network.entity.interactor.ReportSaveFirebaseInteractor;
+import com.yunjaena.accident_management.data.network.entity.interactor.ReportFirebaseInteractor;
 import com.yunjaena.accident_management.ui.resgister.adapter.RegisterImageAdapter;
 import com.yunjaena.accident_management.ui.resgister.presenter.RegisterContract;
 import com.yunjaena.accident_management.ui.resgister.presenter.RegisterPresenter;
@@ -127,14 +127,13 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         delayCauseSpecific2 = -1;
         savePath = -1;
 
-        registerPresenter = new RegisterPresenter(this, new ReportSaveFirebaseInteractor());
+        registerPresenter = new RegisterPresenter(this, new ReportFirebaseInteractor());
         initView();
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.register);
 
 
         updateUI();
-
     }
 
     public void initView() {
@@ -320,7 +319,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
 
     @Override
     public void showSuccessSaved() {
-
+        finish();
     }
 
     public void showCameraOrGallerySelectDialog() {

@@ -4,8 +4,12 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.UploadTask;
 import com.yunjaena.accident_management.data.network.entity.Report;
@@ -22,19 +26,45 @@ import java.util.UUID;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
-public class ReportSaveFirebaseInteractor implements ReportSaveInteractor {
-    public static final String TAG = "ReportSaveFirebase";
-    private final String REFERENCE_URL = "gs://accidentmanagement-b90c8.appspot.com";
+public class ReportFirebaseInteractor implements ReportInteractor {
+    public static final String TAG = "ReportFirebase";
+    private static final String REFERENCE_URL = "gs://accidentmanagement-b90c8.appspot.com";
 
     @Override
     public Observable<Boolean> saveReport(Report report) {
-       return saveImage(report.getImageBitmap()).
+        return saveImage(report.getImageBitmap()).
                 map(StringUtil::stringListToString)
                 .doOnNext(report::setImageFileArrayString)
                 .flatMap(s -> saveReportAtFireBase(report));
     }
 
+    @Override
+    public Observable<List<Report>> loadAllReport() {
+        return Observable.create(subscriber-> {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            List<Report> reportList = new ArrayList<>();
+            Query query = reference.child("report_list");
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        for (DataSnapshot issue : dataSnapshot.getChildren()) {
+                            Report report = issue.getValue(Report.class);
+                            Log.d(TAG, "report : " + report);
+                            reportList.add(report);
+                        }
+                        subscriber.onNext(reportList);
+                        subscriber.onComplete();
+                    }
+                }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    subscriber.onError(new Throwable("canceled get report"));
+                }
+            });
+         });
+    }
 
     @Override
     public Observable<List<String>> saveImage(List<Bitmap> bitmapList) {

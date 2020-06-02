@@ -2,40 +2,44 @@ package com.yunjaena.accident_management.data.network.entity;
 
 import android.graphics.Bitmap;
 
+import androidx.annotation.Keep;
+
 import com.google.firebase.database.Exclude;
 import com.yunjaena.accident_management.util.DateUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-public class Report {
-    private String id;
-    private String saveDate;
-    private String updateDate;
-    private String companyName;
-    private String accidentDate;
-    private int constructType;
-    private int constructDetailType;
-    private int delayCauseOne;
-    private int delayCauseDetailOne;
-    private int delayCauseTwo;
-    private int delayCauseDetailTwo;
-    private int savePath;
-    private String designChangeAndError;
-    private String contractChangeAndViolation;
-    private String inevitableClause;
-    private String concurrentOccurrence;
-    private String imageFileArrayString;
-    private List<String> imageFileName;
-    private List<Bitmap> imageBitmap;
-    private boolean isDelete;
+@Keep
+public class Report implements Serializable {
+    public String id;
+    public String saveDate;
+    public String updateDate;
+    public String companyName;
+    public String accidentDate;
+    public int constructType;
+    public int constructDetailType;
+    public int delayCauseOne;
+    public int delayCauseDetailOne;
+    public int delayCauseTwo;
+    public int delayCauseDetailTwo;
+    public int savePath;
+    public String designChangeAndError;
+    public String contractChangeAndViolation;
+    public String inevitableClause;
+    public String concurrentOccurrence;
+    public String imageFileArrayString;
+    @Exclude
+    public List<String> imageFileName;
+    @Exclude
+    public List<Bitmap> imageBitmap;
+    public boolean isDelete;
 
     public Report() {
     }
-
 
     public Report(Builder builder) {
         this.id = builder.id;
@@ -148,6 +152,22 @@ public class Report {
         this.delayCauseDetailTwo = delayCauseDetailTwo;
     }
 
+    public int getSavePath() {
+        return savePath;
+    }
+
+    public void setSavePath(int savePath) {
+        this.savePath = savePath;
+    }
+
+    public String getDesignChangeAndError() {
+        return designChangeAndError;
+    }
+
+    public void setDesignChangeAndError(String designChangeAndError) {
+        this.designChangeAndError = designChangeAndError;
+    }
+
     public String getContractChangeAndViolation() {
         return contractChangeAndViolation;
     }
@@ -202,22 +222,6 @@ public class Report {
 
     public void setDelete(boolean delete) {
         isDelete = delete;
-    }
-
-    public String getDesignChangeAndError() {
-        return designChangeAndError;
-    }
-
-    public void setDesignChangeAndError(String designChangeAndError) {
-        this.designChangeAndError = designChangeAndError;
-    }
-
-    public int getSavePath() {
-        return savePath;
-    }
-
-    public void setSavePath(int savePath) {
-        this.savePath = savePath;
     }
 
     @Exclude
