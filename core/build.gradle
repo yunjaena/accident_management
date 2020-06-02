@@ -70,6 +70,7 @@ dependencies {
     api project.firebaseCore
     api project.firebaseDatabase
     api project.firebasePerformance
+    api project.firebaseStorage
 
     /* Dependency - Retrofit2 */
     api project.retrofit

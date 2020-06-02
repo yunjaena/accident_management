@@ -1,46 +1,44 @@
 package com.yunjaena.accident_management.ui.resgister.presenter;
 
 import com.yunjaena.accident_management.R;
-import com.yunjaena.accident_management.repository.entity.Report;
-import com.yunjaena.accident_management.repository.source.ReportSource;
+import com.yunjaena.accident_management.data.network.entity.Report;
+import com.yunjaena.accident_management.data.network.entity.interactor.ReportSaveInteractor;
+import com.yunjaena.accident_management.data.repository.source.ReportSource;
 
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class RegisterPresenter {
     private CompositeDisposable disposable;
     private RegisterContract.View registerView;
-    private ReportSource reportSource;
+    private ReportSaveInteractor reportSaveInteractor;
 
-    public RegisterPresenter(RegisterContract.View registerView, ReportSource reportSource) {
+    public RegisterPresenter(RegisterContract.View registerView,ReportSaveInteractor reportSaveInteractor) {
         disposable = new CompositeDisposable();
         this.registerView = registerView;
-        this.reportSource = reportSource;
+        this.reportSaveInteractor = reportSaveInteractor;
         registerView.setPresenter(this);
     }
 
     public void saveReport(Report report) {
-        registerView.showProgress(R.string.saving);
-        disposable.add(
-                Observable.just(reportSource.saveReport(report)).
-                        subscribeOn(Schedulers.io()).
-                        observeOn(AndroidSchedulers.mainThread()).
-                        subscribe(isSaved -> {
-                                    if (isSaved)
-                                        registerView.showSuccessSaved();
-                                    else
-                                        registerView.showMessage(R.string.saved_failed);
-                                    registerView.hideProgress();
-                                },
-                                error -> {
-                                    registerView.showMessage(R.string.saved_failed);
-                                    registerView.hideProgress();
-                                }
-                        )
-
-        );
+        registerView.showProgress(R.string.uploading);
+        Disposable reportDisposable = reportSaveInteractor.saveReport(report)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aBoolean -> {
+                            if (aBoolean) {
+                                registerView.showMessage(R.string.upload_complete);
+                                registerView.hideProgress();
+                            }
+                            else {
+                                registerView.showMessage(R.string.upload_failed);
+                                registerView.hideProgress();
+                            }
+                        }
+                );
+        disposable.add(reportDisposable);
     }
 
     public void releaseView() {

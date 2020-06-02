@@ -3,7 +3,7 @@ package com.yunjaena.accident_management;
 import android.app.Application;
 import android.content.Context;
 
-import com.yunjaena.accident_management.repository.database.ReportDBHelper;
+import com.yunjaena.accident_management.data.repository.database.ReportDBHelper;
 import com.yunjaena.accident_management.util.ImageUtil;
 import com.yunjaena.core.toast.ToastUtil;
 

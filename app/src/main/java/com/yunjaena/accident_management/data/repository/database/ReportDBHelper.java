@@ -1,4 +1,4 @@
-package com.yunjaena.accident_management.repository.database;
+package com.yunjaena.accident_management.data.repository.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.yunjaena.accident_management.repository.entity.Report;
+import com.yunjaena.accident_management.data.repository.entity.Report;
 
 import org.json.JSONArray;
 import org.json.JSONException;

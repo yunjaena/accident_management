@@ -49,6 +49,7 @@ ext {
     firebaseCore = "com.google.firebase:firebase-core:$firebase_version"
     firebaseDatabase = "com.google.firebase:firebase-database:$firebase_version"
     firebasePerformance = "com.google.firebase:firebase-perf:$firebase_version"
+    firebaseStorage = "com.google.firebase:firebase-storage:$firebase_version"
 
     /* Dependency - Retrofit2 */
     def retrofit_version = "2.3.0"

@@ -1,4 +1,4 @@
-package com.yunjaena.accident_management.repository.entity;
+package com.yunjaena.accident_management.data.repository.entity;
 
 import android.graphics.Bitmap;
 

@@ -39,8 +39,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yunjaena.accident_management.R;
-import com.yunjaena.accident_management.repository.entity.Report;
-import com.yunjaena.accident_management.repository.source.ReportRepository;
+import com.yunjaena.accident_management.data.network.entity.Report;
+import com.yunjaena.accident_management.data.network.entity.interactor.ReportSaveFirebaseInteractor;
 import com.yunjaena.accident_management.ui.resgister.adapter.RegisterImageAdapter;
 import com.yunjaena.accident_management.ui.resgister.presenter.RegisterContract;
 import com.yunjaena.accident_management.ui.resgister.presenter.RegisterPresenter;
@@ -127,7 +127,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         delayCauseSpecific2 = -1;
         savePath = -1;
 
-        registerPresenter = new RegisterPresenter(this, new ReportRepository());
+        registerPresenter = new RegisterPresenter(this, new ReportSaveFirebaseInteractor());
         initView();
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.register);
@@ -179,7 +179,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         registerImageAdapter.setRecyclerViewClickListener(new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
-                if(position >= bitmapList.size()){
+                if (position >= bitmapList.size()) {
                     showCameraOrGallerySelectDialog();
                     return;
                 }
@@ -215,35 +215,46 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     public void save() {
         String companyName = companyNameEditText.getText().toString().trim();
         String accidentDate = accidentDateTextView.getText().toString().trim();
-        String constructionType = "1";
-        String registerDelayCause = "1";
-        String savePath = "1";
+        int constructType = this.constructionType;
+        int constructDetailType = this.constructionTypeSpecific;
+        int delayCauseOne = this.delayCause1;
+        int delayCauseDetailOne = this.delayCauseSpecific1;
+        int delayCauseTwo = this.delayCause2;
+        int delayCauseDetailTwo = this.delayCauseSpecific2;
+        int savePath = this.savePath;
         String designChangeAndError = designChangeAndErrorEditText.getText().toString().trim();
         String contractChangeAndViolation = contractChangeAndViolationEditText.getText().toString().trim();
         String inevitableClause = inevitableClauseEditText.getText().toString().trim();
         String concurrentOccurrence = concurrentOccurrenceEditText.getText().toString().trim();
 
-
-        if (companyName.isEmpty() || accidentDate.isEmpty() || constructionType.isEmpty() || registerDelayCause.isEmpty()
-                || savePath.isEmpty() || designChangeAndError.isEmpty() || contractChangeAndViolation.isEmpty() ||
+        if (companyName.isEmpty() || accidentDate.isEmpty() || savePath == -1 || designChangeAndError.isEmpty() || contractChangeAndViolation.isEmpty() ||
                 inevitableClause.isEmpty() || concurrentOccurrence.isEmpty()
         ) {
             ToastUtil.getInstance().makeShort(R.string.input_all_waring);
             return;
         }
 
+        if (bitmapList.size() < 1) {
+            ToastUtil.getInstance().makeShort(R.string.input_picture_waring);
+            return;
+        }
 
         Report.Builder builder = new Report.Builder();
-        builder.companyName(companyName)
-                .accidentDate(accidentDate)
-                .delayCause(registerDelayCause)
-                .constructType(constructionType)
-                .savePath(savePath)
-                .designChangeAndError(designChangeAndError)
-                .contractChangeAndViolation(contractChangeAndViolation)
-                .inevitableClause(inevitableClause)
-                .concurrentOccurrence(concurrentOccurrence);
-
+        builder.companyName(companyName);
+        builder.accidentDate(accidentDate);
+        builder.constructType(constructType);
+        builder.constructDetailType(constructDetailType);
+        builder.delayCauseOne(delayCauseOne);
+        builder.delayCauseDetailOne(delayCauseDetailOne);
+        builder.delayCauseTwo(delayCauseTwo);
+        builder.delayCauseDetailTwo(delayCauseDetailTwo);
+        builder.savePath(savePath);
+        builder.designChangeAndError(designChangeAndError);
+        builder.contractChangeAndViolation(contractChangeAndViolation);
+        builder.inevitableClause(inevitableClause);
+        builder.concurrentOccurrence(concurrentOccurrence);
+        builder.isDelete(false);
+        builder.imageBitmap(bitmapList);
         registerPresenter.saveReport(builder.build());
 
     }
@@ -401,11 +412,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         int permissionCheck = ContextCompat.checkSelfPermission(context,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-        if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-            return false;
-        } else {
-            return true;
-        }
+        return permissionCheck != PackageManager.PERMISSION_DENIED;
     }
 
     private void dispatchTakePictureIntent() {
@@ -705,7 +712,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     }
 
     public void updateSavePath() {
-        if(delayCause1 == delayCause2 && delayCauseSpecific1 == delayCauseSpecific2) {
+        if (delayCause1 == delayCause2 && delayCauseSpecific1 == delayCauseSpecific2) {
             ToastUtil.getInstance().makeShort(R.string.error_same_delay_cause);
             savePathTextView.setText("");
             savePath = -1;

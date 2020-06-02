@@ -1,6 +1,6 @@
-package com.yunjaena.accident_management.repository.source;
+package com.yunjaena.accident_management.data.repository.source;
 
-import com.yunjaena.accident_management.repository.entity.Report;
+import com.yunjaena.accident_management.data.repository.entity.Report;
 
 import java.util.List;
 

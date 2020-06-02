@@ -1,7 +1,7 @@
-package com.yunjaena.accident_management.repository.source;
+package com.yunjaena.accident_management.data.repository.source;
 
-import com.yunjaena.accident_management.repository.database.ReportDBHelper;
-import com.yunjaena.accident_management.repository.entity.Report;
+import com.yunjaena.accident_management.data.repository.database.ReportDBHelper;
+import com.yunjaena.accident_management.data.repository.entity.Report;
 import com.yunjaena.accident_management.util.DateUtil;
 import com.yunjaena.accident_management.util.ImageUtil;
 
