@@ -1,10 +1,8 @@
 package com.yunjaena.accident_management.ui.resgister.presenter;
 
-import android.util.Log;
-
 import com.yunjaena.accident_management.R;
 import com.yunjaena.accident_management.data.network.entity.Report;
-import com.yunjaena.accident_management.data.network.entity.interactor.ReportInteractor;
+import com.yunjaena.accident_management.data.network.interactor.ReportInteractor;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;

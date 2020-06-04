@@ -1,4 +1,4 @@
-package com.yunjaena.accident_management.data.network.entity.interactor;
+package com.yunjaena.accident_management.data.network.interactor;
 
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -84,7 +84,7 @@ public class ReportFirebaseInteractor implements ReportInteractor {
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
             Map<String, Object> childUpdates = new HashMap<>();
             Map<String, Object> postValues = null;
-            report.setId(DateUtil.getCurrentDateWithOutTime() + UUID.randomUUID());
+            report.setId(DateUtil.getCurrentDateWithOutTimeWithOutDot() + UUID.randomUUID());
             postValues = report.toMap();
             childUpdates.put("/report_list/" + report.getId(), postValues);
             Task<Void> task = databaseReference.updateChildren(childUpdates);
@@ -102,7 +102,7 @@ public class ReportFirebaseInteractor implements ReportInteractor {
                 subscriber.onError(new Throwable("image compress failed"));
                 return;
             }
-            String fileName = DateUtil.getCurrentDate() + UUID.randomUUID() + ".jpg";
+            String fileName = DateUtil.getCurrentDateWithOutTimeWithOutDot() + UUID.randomUUID() + ".jpg";
             UploadTask uploadTask = FirebaseStorage.getInstance().getReferenceFromUrl(REFERENCE_URL).child(fileName).putBytes(data);
             uploadTask.addOnSuccessListener(taskSnapshot -> {
                 subscriber.onNext(fileName);

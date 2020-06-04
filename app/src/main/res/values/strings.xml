@@ -13,6 +13,8 @@
     <string name="accident_date">발생 일자</string>
     <string name="construction_type">공사 종류</string>
     <string name="construction_type_specific">공사 종류\n(상세)</string>
+    <string name="real_start_date">실제\n시작일</string>
+    <string name="real_end_date">실제\n완료일</string>
     <string name="delay_cause">지연 원인</string>
     <string name="delay_cause_specific">지연 원인\n(상세)</string>
     <string name="save_path">저장 경로</string>
@@ -25,6 +27,7 @@
     <string name="input_place">입력란</string>
     <string name="input_all_waring">전체 항목을 입력하셨는지 확인해주세요.</string>
     <string name="input_picture_waring">사진을 1장이상 첨부해주세요.</string>
+    <string name="time_faster_than_before_warning">실제완료일이 실제시작일 보다 빠르거나 같을 수 없습니다.</string>
     <string name="saved_failed">저장에 실패했습니다.</string>
     <string name="need_write_permission_title">쓰기 권한</string>
     <string name="select">선택</string>

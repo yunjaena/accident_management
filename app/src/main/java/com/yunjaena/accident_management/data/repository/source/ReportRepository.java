@@ -12,7 +12,7 @@ public class ReportRepository implements ReportSource {
     @Override
     public boolean saveReport(Report report) {
         for (int i = 0; i < report.getImageBitmap().size(); i++) {
-            String fileName = DateUtil.getCurrentDate() + ".png";
+            String fileName = DateUtil.getCurrentDateWithUnderBar() + ".png";
             if (ImageUtil.getInstance().setExternal(true).setFileName(fileName).setDirectoryName("pictures")
                     .save(report.getImageBitmap().get(i))) {
                 report.getImageFileName().add(fileName);

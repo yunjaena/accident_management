@@ -1,4 +1,4 @@
-package com.yunjaena.accident_management.data.network.entity.interactor;
+package com.yunjaena.accident_management.data.network.interactor;
 
 import android.graphics.Bitmap;
 import com.yunjaena.accident_management.data.network.entity.Report;

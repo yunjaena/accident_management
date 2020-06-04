@@ -23,11 +23,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,7 +42,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.yunjaena.accident_management.R;
 import com.yunjaena.accident_management.data.network.entity.Report;
-import com.yunjaena.accident_management.data.network.entity.interactor.ReportFirebaseInteractor;
+import com.yunjaena.accident_management.data.network.interactor.ReportFirebaseInteractor;
 import com.yunjaena.accident_management.ui.resgister.adapter.RegisterImageAdapter;
 import com.yunjaena.accident_management.ui.resgister.presenter.RegisterContract;
 import com.yunjaena.accident_management.ui.resgister.presenter.RegisterPresenter;
@@ -54,6 +56,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -71,6 +75,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     private LinearLayout delayCauseTwoSpecificLinearLayout;
     private EditText companyNameEditText;
     private TextView accidentDateTextView;
+    private TextView realStartDayTextView;
+    private TextView realEndDayTextView;
     private Spinner constructionTypeSpinner;
     private Spinner constructionTypeSpecificSpinner;
     private Spinner registerDelayCauseOneSpinner;
@@ -90,7 +96,6 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     private RegisterImageAdapter registerImageAdapter;
     private LinearLayoutManager linearLayoutManager;
 
-    private String selectDate;
     private int constructionType;
     private int constructionTypeSpecific;
     private int delayCause1;
@@ -118,7 +123,6 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
 
     public void init() {
         context = this;
-        selectDate = DateUtil.getCurrentDateWithOutTime();
         constructionType = 0;
         constructionTypeSpecific = -1;
         delayCause1 = 0;
@@ -157,6 +161,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         cameraImageView = findViewById(R.id.register_camera_image_view);
         delayCauseOneSpecificLinearLayout = findViewById(R.id.register_delay_cause_specific_one_linear_layout);
         delayCauseTwoSpecificLinearLayout = findViewById(R.id.register_delay_cause_specific_two_linear_layout);
+        realStartDayTextView = findViewById(R.id.register_real_start_date_text_view);
+        realEndDayTextView = findViewById(R.id.register_real_end_date_text_view);
         setEditTextGravityStartWhenLengthOverZero(designChangeAndErrorEditText);
         setEditTextGravityStartWhenLengthOverZero(contractChangeAndViolationEditText);
         setEditTextGravityStartWhenLengthOverZero(inevitableClauseEditText);
@@ -164,6 +170,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         bitmapList = new ArrayList<>();
         cameraLinearLayout.setOnClickListener(this);
         accidentDateTextView.setOnClickListener(this);
+        realStartDayTextView.setOnClickListener(this);
+        realEndDayTextView.setOnClickListener(this);
         setCameraRecyclerView();
 
         /*Set Spinner*/
@@ -214,6 +222,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     public void save() {
         String companyName = companyNameEditText.getText().toString().trim();
         String accidentDate = accidentDateTextView.getText().toString().trim();
+        String realStartDate  = realStartDayTextView.getText().toString().trim();
+        String realEndDate = realEndDayTextView.getText().toString().trim();
         int constructType = this.constructionType;
         int constructDetailType = this.constructionTypeSpecific;
         int delayCauseOne = this.delayCause1;
@@ -227,7 +237,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         String concurrentOccurrence = concurrentOccurrenceEditText.getText().toString().trim();
 
         if (companyName.isEmpty() || accidentDate.isEmpty() || savePath == -1 || designChangeAndError.isEmpty() || contractChangeAndViolation.isEmpty() ||
-                inevitableClause.isEmpty() || concurrentOccurrence.isEmpty()
+                inevitableClause.isEmpty() || concurrentOccurrence.isEmpty() || realStartDate.isEmpty() || realEndDate.isEmpty()
         ) {
             ToastUtil.getInstance().makeShort(R.string.input_all_waring);
             return;
@@ -238,9 +248,23 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             return;
         }
 
+        if(DateUtil.dateCompare(realStartDate, realEndDate) >= 0){
+            ToastUtil.getInstance().makeShort(R.string.time_faster_than_before_warning);
+            return;
+        }
+
+        if(delayCauseOne == -1 && delayCauseDetailOne == -1){
+            delayCauseDetailOne = delayCauseDetailTwo;
+            delayCauseOne = delayCauseTwo;
+        }
+
         Report.Builder builder = new Report.Builder();
         builder.companyName(companyName);
         builder.accidentDate(accidentDate);
+        builder.realStartDate(realStartDate);
+        builder.updateDate(DateUtil.getCurrentDate());
+        builder.saveDate(DateUtil.getCurrentDate());
+        builder.realEndDate(realEndDate);
         builder.constructType(constructType);
         builder.constructDetailType(constructDetailType);
         builder.delayCauseOne(delayCauseOne);
@@ -391,7 +415,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     }
 
     private File createImageFile() throws IOException {
-        String timeStamp = DateUtil.getCurrentDate();
+        String timeStamp = DateUtil.getCurrentDateWithUnderBar();
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
@@ -536,8 +560,6 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     }
 
     public void updateUI() {
-        accidentDateTextView.setText(selectDate);
-
         if (bitmapList.size() < 1) {
             cameraLinearLayout.setVisibility(View.VISIBLE);
         } else {
@@ -553,23 +575,13 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
                 showCameraOrGallerySelectDialog();
                 break;
             case R.id.register_accident_date_text_view:
-                openCalendarView();
+            case R.id.register_real_end_date_text_view:
+            case R.id.register_real_start_date_text_view:
+                openDateTimePicker(findViewById(v.getId()));
                 break;
         }
     }
 
-    private void openCalendarView() {
-        String[] dateSplitString = selectDate.split("-");
-        int year = Integer.parseInt(dateSplitString[0]);
-        int month = Integer.parseInt(dateSplitString[1]);
-        int day = Integer.parseInt(dateSplitString[2]);
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, yearSelect, monthSelect, daySelect) -> {
-            selectDate = String.format(Locale.KOREA, "%04d-%02d-%02d", yearSelect, monthSelect + 1, daySelect);
-            updateUI();
-        }, year, month - 1, day);
-
-        datePickerDialog.show();
-    }
 
     public void setConstructionTypeSpinner() {
         ArrayList arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.construction_type)));
@@ -723,5 +735,27 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             savePathTextView.setText("");
         else
             savePathTextView.setText(savePathStringArray[savePath]);
+    }
+
+    public void openDateTimePicker(TextView textView){
+        final View dialogView = View.inflate(this, R.layout.date_time_picker, null);
+        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+
+        dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePicker datePicker = dialogView.findViewById(R.id.date_picker);
+                TimePicker timePicker = dialogView.findViewById(R.id.time_picker);
+                Calendar calendar = new GregorianCalendar(datePicker.getYear(),
+                        datePicker.getMonth(),
+                        datePicker.getDayOfMonth(),
+                        timePicker.getCurrentHour(),
+                        timePicker.getCurrentMinute());
+
+                textView.setText(DateUtil.getCurrentDate(calendar));
+                alertDialog.dismiss();
+            }});
+        alertDialog.setView(dialogView);
+        alertDialog.show();
     }
 }

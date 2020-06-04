@@ -20,6 +20,8 @@ public class Report implements Serializable {
     public String updateDate;
     public String companyName;
     public String accidentDate;
+    public String realStartDate;
+    public String realEndDate;
     public int constructType;
     public int constructDetailType;
     public int delayCauseOne;
@@ -47,6 +49,8 @@ public class Report implements Serializable {
         this.updateDate = builder.updateDate;
         this.companyName = builder.companyName;
         this.accidentDate = builder.accidentDate;
+        this.realStartDate = builder.realStartDate;
+        this.realEndDate = builder.realEndDate;
         this.constructType = builder.constructType;
         this.constructDetailType = builder.constructDetailType;
         this.designChangeAndError = builder.designChangeAndError;
@@ -224,6 +228,23 @@ public class Report implements Serializable {
         isDelete = delete;
     }
 
+
+    public String getRealStartDate() {
+        return realStartDate;
+    }
+
+    public void setRealStartDate(String realStartDate) {
+        this.realStartDate = realStartDate;
+    }
+
+    public String getRealEndDate() {
+        return realEndDate;
+    }
+
+    public void setRealEndDate(String realEndDate) {
+        this.realEndDate = realEndDate;
+    }
+
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
@@ -232,6 +253,8 @@ public class Report implements Serializable {
         result.put("updateDate", updateDate);
         result.put("companyName", companyName);
         result.put("accidentDate", accidentDate);
+        result.put("realStartDate", realStartDate);
+        result.put("realEndDate", realEndDate);
         result.put("constructType", constructType);
         result.put("constructDetailType", constructDetailType);
         result.put("delayCauseOne", delayCauseOne);
@@ -257,6 +280,8 @@ public class Report implements Serializable {
                 ", updateDate='" + updateDate + '\'' +
                 ", companyName='" + companyName + '\'' +
                 ", accidentDate='" + accidentDate + '\'' +
+                ", realStartDate='" + realStartDate + '\'' +
+                ", realEndDate='" + realEndDate + '\'' +
                 ", constructType=" + constructType +
                 ", constructDetailType=" + constructDetailType +
                 ", delayCauseOne=" + delayCauseOne +
@@ -277,10 +302,12 @@ public class Report implements Serializable {
 
     public static class Builder {
         private String id = "";
-        private String saveDate = DateUtil.getCurrentDateWithOutTime();
-        private String updateDate = DateUtil.getCurrentDateWithOutTime();
+        private String saveDate = DateUtil.getCurrentDate();
+        private String updateDate = DateUtil.getCurrentDate();
         private String companyName = "";
-        private String accidentDate = DateUtil.getCurrentDateWithOutTime();
+        private String accidentDate = DateUtil.getCurrentDate();
+        private String realStartDate = DateUtil.getCurrentDate();
+        private String realEndDate = DateUtil.getCurrentDate();
         private int constructType = -1;
         private int constructDetailType = -1;
         private int delayCauseOne = -1;
@@ -312,6 +339,16 @@ public class Report implements Serializable {
 
         public Builder updateDate(String updateDate) {
             this.updateDate = updateDate;
+            return this;
+        }
+
+        public Builder realStartDate(String realStartDate) {
+            this.realStartDate = realStartDate;
+            return this;
+        }
+
+        public Builder realEndDate(String realEndDate) {
+            this.realEndDate = realEndDate;
             return this;
         }
 
