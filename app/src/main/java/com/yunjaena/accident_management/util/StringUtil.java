@@ -13,7 +13,6 @@ public class StringUtil {
 
     public static List<String> stringToStringList(String string) {
         String[] s = string.split(",");
-        List<String> stringList = new ArrayList<>(Arrays.asList(s));
-        return stringList;
+        return new ArrayList<>(Arrays.asList(s));
     }
 }

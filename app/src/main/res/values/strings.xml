@@ -1,12 +1,14 @@
 <resources>
     <string name="app_name">k-cm</string>
     <string name="register">등록</string>
-    <string name="inquire">조회</string>
+    <string name="retrieve">조회</string>
     <string name="save">저장</string>
     <string name="upload_complete">업로드 완료</string>
     <string name="upload_failed">업로드 실패</string>
+    <string name="load_failed">데이터를 읽어 올 수 없습니다.</string>
     <string name="okay">확인</string>
     <string name="uploading">업로드 중</string>
+    <string name="loading">로딩중</string>
     <string name="cancel">취소</string>
     <string name="saving">저장중</string>
     <string name="company_name">업 체 명</string>
@@ -14,7 +16,9 @@
     <string name="construction_type">공사 종류</string>
     <string name="construction_type_specific">공사 종류\n(상세)</string>
     <string name="real_start_date">실제\n시작일</string>
+    <string name="real_start_date_no_enter">실제 시작일</string>
     <string name="real_end_date">실제\n완료일</string>
+    <string name="real_end_date_no_enter">실제 완료일</string>
     <string name="delay_cause">지연 원인</string>
     <string name="delay_cause_specific">지연 원인\n(상세)</string>
     <string name="save_path">저장 경로</string>

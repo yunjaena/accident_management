@@ -3,7 +3,6 @@ package com.yunjaena.accident_management.ui.resgister;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
@@ -59,7 +58,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 
 public class RegisterActivity extends ActivityBase implements RegisterContract.View, View.OnClickListener {
     public static final String TAG = "RegisterActivity";
@@ -222,7 +220,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     public void save() {
         String companyName = companyNameEditText.getText().toString().trim();
         String accidentDate = accidentDateTextView.getText().toString().trim();
-        String realStartDate  = realStartDayTextView.getText().toString().trim();
+        String realStartDate = realStartDayTextView.getText().toString().trim();
         String realEndDate = realEndDayTextView.getText().toString().trim();
         int constructType = this.constructionType;
         int constructDetailType = this.constructionTypeSpecific;
@@ -248,12 +246,12 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             return;
         }
 
-        if(DateUtil.dateCompare(realStartDate, realEndDate) >= 0){
+        if (DateUtil.dateCompare(realStartDate, realEndDate) >= 0) {
             ToastUtil.getInstance().makeShort(R.string.time_faster_than_before_warning);
             return;
         }
 
-        if(delayCauseOne == -1 && delayCauseDetailOne == -1){
+        if (delayCauseOne == -1 && delayCauseDetailOne == -1) {
             delayCauseDetailOne = delayCauseDetailTwo;
             delayCauseOne = delayCauseTwo;
         }
@@ -737,7 +735,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             savePathTextView.setText(savePathStringArray[savePath]);
     }
 
-    public void openDateTimePicker(TextView textView){
+    public void openDateTimePicker(TextView textView) {
         final View dialogView = View.inflate(this, R.layout.date_time_picker, null);
         final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 
@@ -754,7 +752,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
 
                 textView.setText(DateUtil.getCurrentDate(calendar));
                 alertDialog.dismiss();
-            }});
+            }
+        });
         alertDialog.setView(dialogView);
         alertDialog.show();
     }

@@ -37,6 +37,10 @@ public class RegisterPresenter {
                                 registerView.hideProgress();
                             }
                         }
+                        ,error -> {
+                            registerView.showMessage(R.string.upload_failed);
+                            registerView.hideProgress();
+                        }
                 );
         disposable.add(reportDisposable);
     }
