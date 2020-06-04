@@ -1,7 +1,6 @@
 package com.yunjaena.accident_management.ui.retrieve.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.yunjaena.accident_management.R;
 import com.yunjaena.accident_management.util.glide.FirebaseGlideUtil;
 import com.yunjaena.core.recyclerview.RecyclerViewClickListener;
@@ -37,7 +35,8 @@ public class ReportImageAdapter extends RecyclerView.Adapter<ReportImageAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String bitmapName = bitmapList.get(position);
-        FirebaseGlideUtil.setImage(context, bitmapName, holder.imageImageView);
+        if (bitmapName != null && !bitmapName.isEmpty())
+            FirebaseGlideUtil.setImage(context, bitmapName, holder.imageImageView);
         holder.imageImageView.setOnClickListener(v -> {
             if (recyclerViewClickListener != null)
                 recyclerViewClickListener.onClick(holder.imageImageView, position);

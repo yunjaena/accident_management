@@ -38,9 +38,22 @@ public class ReportFirebaseInteractor implements ReportInteractor {
                 .flatMap(s -> saveReportAtFireBase(report));
     }
 
+
+    @Override
+    public Observable<Boolean> updateReport(Report report) {
+        return saveImage(report.getImageBitmap()).
+                map(stringList -> {
+                    stringList.addAll(report.getImageFileName());
+                    return stringList;
+                })
+                .map(StringUtil::stringListToString)
+                .doOnNext(report::setImageFileArrayString)
+                .flatMap(s -> updateReportAtFireBase(report));
+    }
+
     @Override
     public Observable<List<Report>> loadAllReport() {
-        return Observable.create(subscriber-> {
+        return Observable.create(subscriber -> {
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             List<Report> reportList = new ArrayList<>();
             Query query = reference.child("report_list");
@@ -63,7 +76,7 @@ public class ReportFirebaseInteractor implements ReportInteractor {
                     subscriber.onError(new Throwable("canceled get report"));
                 }
             });
-         });
+        });
     }
 
     @Override
@@ -73,9 +86,9 @@ public class ReportFirebaseInteractor implements ReportInteractor {
             Task<Void> task = reference.child("report_list").child(id).child("isDelete").setValue(true);
             task.addOnFailureListener(subscriber::onError)
                     .addOnSuccessListener(aVoid -> {
-                subscriber.onNext(true);
-                subscriber.onComplete();
-            });
+                        subscriber.onNext(true);
+                        subscriber.onComplete();
+                    });
         });
     }
 
@@ -98,6 +111,21 @@ public class ReportFirebaseInteractor implements ReportInteractor {
             Map<String, Object> childUpdates = new HashMap<>();
             Map<String, Object> postValues = null;
             report.setId(DateUtil.getCurrentDateWithOutTimeWithOutDot() + UUID.randomUUID());
+            postValues = report.toMap();
+            childUpdates.put("/report_list/" + report.getId(), postValues);
+            Task<Void> task = databaseReference.updateChildren(childUpdates);
+            task.addOnFailureListener(e -> subscriber.onError(e)).addOnSuccessListener(aVoid -> {
+                subscriber.onNext(true);
+                subscriber.onComplete();
+            });
+        });
+    }
+
+    public Observable<Boolean> updateReportAtFireBase(Report report) {
+        return Observable.create(subscriber -> {
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+            Map<String, Object> childUpdates = new HashMap<>();
+            Map<String, Object> postValues = null;
             postValues = report.toMap();
             childUpdates.put("/report_list/" + report.getId(), postValues);
             Task<Void> task = databaseReference.updateChildren(childUpdates);

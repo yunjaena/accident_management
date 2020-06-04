@@ -1,4 +1,4 @@
-package com.yunjaena.accident_management.ui.resgister;
+package com.yunjaena.accident_management.ui.modify;
 
 import android.Manifest;
 import android.app.Activity;
@@ -40,11 +40,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yunjaena.accident_management.R;
+import com.yunjaena.accident_management.data.network.entity.Image;
 import com.yunjaena.accident_management.data.network.entity.Report;
+import com.yunjaena.accident_management.data.network.entity.ReportSerial;
 import com.yunjaena.accident_management.data.network.interactor.ReportFirebaseInteractor;
-import com.yunjaena.accident_management.ui.resgister.adapter.RegisterImageAdapter;
-import com.yunjaena.accident_management.ui.resgister.presenter.RegisterContract;
-import com.yunjaena.accident_management.ui.resgister.presenter.RegisterPresenter;
+import com.yunjaena.accident_management.ui.modify.adapter.ModifyImageAdapter;
+import com.yunjaena.accident_management.ui.modify.presenter.ModifyContract;
+import com.yunjaena.accident_management.ui.modify.presenter.ModifyPresenter;
+import com.yunjaena.accident_management.ui.resgister.ConstructType;
+import com.yunjaena.accident_management.ui.resgister.DelayCause;
+import com.yunjaena.accident_management.ui.resgister.SavePath;
+import com.yunjaena.accident_management.ui.retrieve.RetrieveActivity;
 import com.yunjaena.accident_management.util.DateUtil;
 import com.yunjaena.core.activity.ActivityBase;
 import com.yunjaena.core.recyclerview.RecyclerViewClickListener;
@@ -59,7 +65,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class RegisterActivity extends ActivityBase implements RegisterContract.View, View.OnClickListener {
+public class ModifyActivity extends ActivityBase implements ModifyContract.View, View.OnClickListener {
     public static final String TAG = "ModifyActivity";
     public static final int MAX_IMAGE_SELECT = 10;
     public static final int GALLERY_IMAGE_REQUEST = 1;
@@ -67,9 +73,9 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     public static final int MIN_IMAGE_INPUT = 0;
     private Context context;
     private String currentPhotoPath;
-    private RegisterPresenter registerPresenter;
-    private LinearLayout registerConstructionTypeLinearLayout;
-    private LinearLayout registerConstructionTypeSpecificLinearLayout;
+    private ModifyPresenter modifyPresenter;
+    private LinearLayout modifyConstructionTypeLinearLayout;
+    private LinearLayout modifyConstructionTypeSpecificLinearLayout;
     private LinearLayout delayCauseOneSpecificLinearLayout;
     private LinearLayout delayCauseTwoSpecificLinearLayout;
     private EditText companyNameEditText;
@@ -80,20 +86,21 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     private TextView realEndDayTextView;
     private Spinner constructionTypeSpinner;
     private Spinner constructionTypeSpecificSpinner;
-    private Spinner registerDelayCauseOneSpinner;
-    private Spinner registerDelayCauseOneSpecificSpinner;
-    private Spinner registerDelayCauseTwoSpinner;
-    private Spinner registerDelayCauseTwoSpecificSpinner;
+    private Spinner modifyDelayCauseOneSpinner;
+    private Spinner modifyDelayCauseOneSpecificSpinner;
+    private Spinner modifyDelayCauseTwoSpinner;
+    private Spinner modifyDelayCauseTwoSpecificSpinner;
     private TextView savePathTextView;
     private RecyclerView cameraRecyclerView;
     private LinearLayout cameraLinearLayout;
     private ImageView cameraImageView;
     private EditText pictureDescribeEditText;
     private File currentPhotoFile;
-    private List<Bitmap> bitmapList;
-    private RegisterImageAdapter registerImageAdapter;
+    private List<Image> imageList;
+    private ModifyImageAdapter modifyImageAdapter;
     private LinearLayoutManager linearLayoutManager;
 
+    private String id;
     private int constructionType;
     private int constructionTypeSpecific;
     private int delayCause1;
@@ -115,53 +122,72 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_modify);
         init();
     }
 
     public void init() {
+        Report report = new Report((ReportSerial) getIntent().getSerializableExtra(RetrieveActivity.REPORT));
+        imageList = new ArrayList<>();
         context = this;
-        constructionType = 0;
-        constructionTypeSpecific = -1;
-        delayCause1 = 0;
-        delayCauseSpecific1 = 0;
-        delayCause2 = -1;
-        delayCauseSpecific2 = -1;
-        savePath = -1;
+        id = report.getId();
+        constructionType = report.getConstructType();
+        constructionTypeSpecific = report.getConstructDetailType();
+        delayCause1 = report.getDelayCauseOne();
+        delayCauseSpecific1 = report.getDelayCauseDetailOne();
+        delayCause2 = report.getDelayCauseTwo();
+        delayCauseSpecific2 = report.getDelayCauseDetailTwo();
+        savePath = report.getSavePath();
+        for (String fileName : report.getImageFileArray())
+            imageList.add(new Image(fileName));
 
-        registerPresenter = new RegisterPresenter(this, new ReportFirebaseInteractor());
+        modifyPresenter = new ModifyPresenter(this, new ReportFirebaseInteractor());
         initView();
         if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.register);
+            getSupportActionBar().setTitle(R.string.modify);
 
 
         updateUI();
+        companyNameEditText.setText(report.getCompanyName());
+        accidentDateTextView.setText(report.getAccidentDate());
+        expectStartDayTextView.setText(report.getExpectStartDate());
+        expectEndDayTextView.setText(report.getExpectEndDate());
+        realStartDayTextView.setText(report.getRealStartDate());
+        realEndDayTextView.setText(report.getRealEndDate());
+        pictureDescribeEditText.setText(report.getPictureDescribe());
+
+        constructionTypeSpinner.setSelection(constructionType);
+        modifyDelayCauseOneSpinner.setSelection(report.getDelayCauseOne() + 1);
+        modifyDelayCauseTwoSpinner.setSelection(report.getDelayCauseTwo() + 1);
+        if (report.getConstructDetailType() != -1)
+            constructionTypeSpecificSpinner.postDelayed(() -> constructionTypeSpecificSpinner.setSelection(report.getConstructDetailType(), true), 1000);
+        modifyDelayCauseOneSpecificSpinner.postDelayed(() -> modifyDelayCauseOneSpecificSpinner.setSelection(report.getDelayCauseDetailOne(), true), 1000);
+        modifyDelayCauseTwoSpecificSpinner.postDelayed(() -> modifyDelayCauseTwoSpecificSpinner.setSelection(report.getDelayCauseDetailTwo(), true), 1000);
     }
 
     public void initView() {
-        registerConstructionTypeSpecificLinearLayout = findViewById(R.id.register_construction_type_specific_linear_layout);
-        registerConstructionTypeLinearLayout = findViewById(R.id.register_construction_type_linear_layout);
-        constructionTypeSpecificSpinner = findViewById(R.id.register_construction_type_specific_spinner);
-        companyNameEditText = findViewById(R.id.register_company_name_edit_text);
-        accidentDateTextView = findViewById(R.id.register_accident_date_text_view);
-        expectStartDayTextView = findViewById(R.id.register_expect_start_date_text_view);
-        expectEndDayTextView = findViewById(R.id.register_expect_end_date_text_view);
-        constructionTypeSpinner = findViewById(R.id.register_construction_type_spinner);
-        registerDelayCauseOneSpinner = findViewById(R.id.register_delay_cause_one_spinner);
-        registerDelayCauseOneSpecificSpinner = findViewById(R.id.register_delay_cause_specific_one_spinner);
-        registerDelayCauseTwoSpinner = findViewById(R.id.register_delay_cause_two_spinner);
-        registerDelayCauseTwoSpecificSpinner = findViewById(R.id.register_delay_cause_specific_two_spinner);
-        savePathTextView = findViewById(R.id.register_save_path_text_view);
-        cameraRecyclerView = findViewById(R.id.register_camera_recycler_view);
-        cameraLinearLayout = findViewById(R.id.register_camera_linear_layout);
-        cameraImageView = findViewById(R.id.register_camera_image_view);
-        delayCauseOneSpecificLinearLayout = findViewById(R.id.register_delay_cause_specific_one_linear_layout);
-        delayCauseTwoSpecificLinearLayout = findViewById(R.id.register_delay_cause_specific_two_linear_layout);
-        realStartDayTextView = findViewById(R.id.register_real_start_date_text_view);
-        realEndDayTextView = findViewById(R.id.register_real_end_date_text_view);
-        pictureDescribeEditText = findViewById(R.id.register_picture_describe_edit_text);
+        modifyConstructionTypeSpecificLinearLayout = findViewById(R.id.modify_construction_type_specific_linear_layout);
+        modifyConstructionTypeLinearLayout = findViewById(R.id.modify_construction_type_linear_layout);
+        constructionTypeSpecificSpinner = findViewById(R.id.modify_construction_type_specific_spinner);
+        companyNameEditText = findViewById(R.id.modify_company_name_edit_text);
+        accidentDateTextView = findViewById(R.id.modify_accident_date_text_view);
+        expectStartDayTextView = findViewById(R.id.modify_expect_start_date_text_view);
+        expectEndDayTextView = findViewById(R.id.modify_expect_end_date_text_view);
+        constructionTypeSpinner = findViewById(R.id.modify_construction_type_spinner);
+        modifyDelayCauseOneSpinner = findViewById(R.id.modify_delay_cause_one_spinner);
+        modifyDelayCauseOneSpecificSpinner = findViewById(R.id.modify_delay_cause_specific_one_spinner);
+        modifyDelayCauseTwoSpinner = findViewById(R.id.modify_delay_cause_two_spinner);
+        modifyDelayCauseTwoSpecificSpinner = findViewById(R.id.modify_delay_cause_specific_two_spinner);
+        savePathTextView = findViewById(R.id.modify_save_path_text_view);
+        cameraRecyclerView = findViewById(R.id.modify_camera_recycler_view);
+        cameraLinearLayout = findViewById(R.id.modify_camera_linear_layout);
+        cameraImageView = findViewById(R.id.modify_camera_image_view);
+        delayCauseOneSpecificLinearLayout = findViewById(R.id.modify_delay_cause_specific_one_linear_layout);
+        delayCauseTwoSpecificLinearLayout = findViewById(R.id.modify_delay_cause_specific_two_linear_layout);
+        realStartDayTextView = findViewById(R.id.modify_real_start_date_text_view);
+        realEndDayTextView = findViewById(R.id.modify_real_end_date_text_view);
+        pictureDescribeEditText = findViewById(R.id.modify_picture_describe_edit_text);
         setEditTextGravityStartWhenLengthOverZero(pictureDescribeEditText);
-        bitmapList = new ArrayList<>();
         cameraLinearLayout.setOnClickListener(this);
         accidentDateTextView.setOnClickListener(this);
         expectStartDayTextView.setOnClickListener(this);
@@ -174,15 +200,16 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         setConstructionTypeSpinner();
         setRegisterDelayCauseOneSpinner();
         setRegisterDelayCauseTwoSpinner();
+
     }
 
     public void setCameraRecyclerView() {
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        registerImageAdapter = new RegisterImageAdapter(this, bitmapList);
-        registerImageAdapter.setRecyclerViewClickListener(new RecyclerViewClickListener() {
+        modifyImageAdapter = new ModifyImageAdapter(this, imageList);
+        modifyImageAdapter.setRecyclerViewClickListener(new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
-                if (position >= bitmapList.size()) {
+                if (position >= imageList.size()) {
                     showCameraOrGallerySelectDialog();
                     return;
                 }
@@ -195,13 +222,13 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             }
         });
         cameraRecyclerView.setLayoutManager(linearLayoutManager);
-        cameraRecyclerView.setAdapter(registerImageAdapter);
-        registerImageAdapter.notifyDataSetChanged();
+        cameraRecyclerView.setAdapter(modifyImageAdapter);
+        modifyImageAdapter.notifyDataSetChanged();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_register, menu);
+        getMenuInflater().inflate(R.menu.menu_modify, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -252,8 +279,16 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             delayCauseDetailOne = delayCauseDetailTwo;
             delayCauseOne = delayCauseTwo;
         }
-
+        List<Bitmap> bitmapList = new ArrayList<>();
+        List<String> fileList = new ArrayList<>();
+        for (Image image : imageList) {
+            if (image.getBitmap() != null)
+                bitmapList.add(image.getBitmap());
+            else
+                fileList.add(image.getImageString());
+        }
         Report.Builder builder = new Report.Builder();
+        builder.id(id);
         builder.companyName(companyName);
         builder.accidentDate(accidentDate);
         builder.realStartDate(realStartDate);
@@ -271,8 +306,9 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         builder.savePath(savePath);
         builder.pictureDescribe(pictureDescribe);
         builder.isDelete(false);
+        builder.imageFileName(fileList);
         builder.imageBitmap(bitmapList);
-        registerPresenter.saveReport(builder.build());
+        modifyPresenter.updateReport(builder.build());
 
     }
 
@@ -302,7 +338,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        registerPresenter.releaseView();
+        modifyPresenter.releaseView();
     }
 
     @Override
@@ -331,8 +367,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     }
 
     @Override
-    public void setPresenter(RegisterPresenter presenter) {
-        this.registerPresenter = presenter;
+    public void setPresenter(ModifyPresenter presenter) {
+        this.modifyPresenter = presenter;
     }
 
     @Override
@@ -374,8 +410,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.delete_image).setMessage(R.string.ask_delete_image);
         builder.setPositiveButton(R.string.okay, (dialog, id) -> {
-            bitmapList.remove(position);
-            registerImageAdapter.notifyDataSetChanged();
+            imageList.remove(position);
+            modifyImageAdapter.notifyDataSetChanged();
             updateUI();
         });
         builder.setNegativeButton(R.string.cancel, null);
@@ -392,7 +428,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+        intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
         startActivityForResult(Intent.createChooser(intent, "다중 선택은 '포토'를 선택하세요."), GALLERY_IMAGE_REQUEST);
     }
 
@@ -515,7 +551,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             if (data != null) {
                 if (data.getClipData() == null) {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), data.getData());
-                    bitmapList.add(bitmap);
+                    imageList.add(new Image(bitmap));
                 } else {
                     ClipData clipData = data.getClipData();
                     if (clipData.getItemCount() > 10) {
@@ -524,12 +560,12 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
                     } else if (clipData.getItemCount() == 1) {
                         Uri uri = clipData.getItemAt(0).getUri();
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
-                        bitmapList.add(bitmap);
+                        imageList.add(new Image(bitmap));
                     } else if (clipData.getItemCount() > 1 && clipData.getItemCount() < 10) {
                         for (int i = 0; i < clipData.getItemCount(); i++) {
                             Uri uri = clipData.getItemAt(i).getUri();
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
-                            bitmapList.add(bitmap);
+                            imageList.add(new Image(bitmap));
                         }
                     }
                 }
@@ -545,7 +581,7 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             String filePath = currentPhotoFile.getAbsolutePath();
             if (filePath != null) {
                 Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-                bitmapList.add(bitmap);
+                imageList.add(new Image(bitmap));
                 updateUI();
             }
         } catch (Exception e) {
@@ -554,25 +590,25 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
     }
 
     public void updateUI() {
-        if (bitmapList.size() < 1) {
+        if (imageList.size() < 1) {
             cameraLinearLayout.setVisibility(View.VISIBLE);
         } else {
             cameraLinearLayout.setVisibility(View.GONE);
         }
-        registerImageAdapter.notifyDataSetChanged();
+        modifyImageAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.register_camera_linear_layout:
+            case R.id.modify_camera_linear_layout:
                 showCameraOrGallerySelectDialog();
                 break;
-            case R.id.register_accident_date_text_view:
-            case R.id.register_expect_start_date_text_view:
-            case R.id.register_expect_end_date_text_view:
-            case R.id.register_real_end_date_text_view:
-            case R.id.register_real_start_date_text_view:
+            case R.id.modify_accident_date_text_view:
+            case R.id.modify_expect_start_date_text_view:
+            case R.id.modify_expect_end_date_text_view:
+            case R.id.modify_real_end_date_text_view:
+            case R.id.modify_real_start_date_text_view:
                 openDateTimePicker(findViewById(v.getId()));
                 break;
         }
@@ -594,18 +630,17 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-        constructionTypeSpinner.post(() -> constructionTypeSpinner.setSelection(constructionType));
     }
 
     public void setConstructionTypeSpecificSpinner() {
         if (ConstructType.childArrayResourceId(constructionType) == null) {
             constructionTypeSpecific = -1;
-            registerConstructionTypeSpecificLinearLayout.setVisibility(View.GONE);
+            modifyConstructionTypeSpecificLinearLayout.setVisibility(View.GONE);
             return;
         }
 
         constructionTypeSpecific = 0;
-        registerConstructionTypeSpecificLinearLayout.setVisibility(View.VISIBLE);
+        modifyConstructionTypeSpecificLinearLayout.setVisibility(View.VISIBLE);
         int arrayId = getResId(ConstructType.childArrayResourceId(constructionType), R.array.class);
         ArrayList arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(arrayId)));
         ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, arrayList);
@@ -627,8 +662,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         ArrayList arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.delay_cause)));
         arrayList.add(0, getResources().getString(R.string.none));
         ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, arrayList);
-        registerDelayCauseOneSpinner.setAdapter(arrayAdapter);
-        registerDelayCauseOneSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        modifyDelayCauseOneSpinner.setAdapter(arrayAdapter);
+        modifyDelayCauseOneSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int index, long l) {
                 delayCause1 = index - 1;
@@ -640,7 +675,6 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-        registerDelayCauseOneSpinner.post(() -> registerDelayCauseOneSpinner.setSelection(delayCause1 + 1));
     }
 
     public void setRegisterDelayCauseOneSpecificSpinner() {
@@ -655,8 +689,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         int arrayId = getResId(DelayCause.childArrayResourceId(delayCause1), R.array.class);
         ArrayList arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(arrayId)));
         ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, arrayList);
-        registerDelayCauseOneSpecificSpinner.setAdapter(arrayAdapter);
-        registerDelayCauseOneSpecificSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        modifyDelayCauseOneSpecificSpinner.setAdapter(arrayAdapter);
+        modifyDelayCauseOneSpecificSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int index, long l) {
                 delayCauseSpecific1 = index;
@@ -675,8 +709,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         ArrayList arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.delay_cause)));
         arrayList.add(0, getResources().getString(R.string.none));
         ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, arrayList);
-        registerDelayCauseTwoSpinner.setAdapter(arrayAdapter);
-        registerDelayCauseTwoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        modifyDelayCauseTwoSpinner.setAdapter(arrayAdapter);
+        modifyDelayCauseTwoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int index, long l) {
                 delayCause2 = index - 1;
@@ -688,7 +722,6 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-        registerDelayCauseTwoSpinner.post(() -> registerDelayCauseTwoSpinner.setSelection(delayCause2 + 1));
     }
 
     public void setRegisterDelayCauseTwoSpecificSpinner() {
@@ -703,8 +736,8 @@ public class RegisterActivity extends ActivityBase implements RegisterContract.V
         int arrayId = getResId(DelayCause.childArrayResourceId(delayCause2), R.array.class);
         ArrayList arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(arrayId)));
         ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, arrayList);
-        registerDelayCauseTwoSpecificSpinner.setAdapter(arrayAdapter);
-        registerDelayCauseTwoSpecificSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        modifyDelayCauseTwoSpecificSpinner.setAdapter(arrayAdapter);
+        modifyDelayCauseTwoSpecificSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int index, long l) {
                 delayCauseSpecific2 = index;

@@ -13,4 +13,6 @@ public interface ReportInteractor {
     Observable<List<Report>> loadAllReport();
 
     Observable<Boolean> deleteReport(String id);
+
+    Observable<Boolean> updateReport(Report report);
 }

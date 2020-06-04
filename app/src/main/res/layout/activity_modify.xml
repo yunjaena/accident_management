@@ -41,7 +41,7 @@
                 android:background="@drawable/bg_gray7_rectangle">
 
                 <EditText
-                    android:id="@+id/register_company_name_edit_text"
+                    android:id="@+id/modify_company_name_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp"
@@ -81,7 +81,7 @@
                 android:background="@drawable/bg_gray7_rectangle">
 
                 <TextView
-                    android:id="@+id/register_accident_date_text_view"
+                    android:id="@+id/modify_accident_date_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="15sp"
@@ -126,7 +126,7 @@
                 android:background="@drawable/bg_gray7_rectangle">
 
                 <TextView
-                    android:id="@+id/register_expect_start_date_text_view"
+                    android:id="@+id/modify_expect_start_date_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="15sp"
@@ -172,7 +172,7 @@
                 android:background="@drawable/bg_gray7_rectangle">
 
                 <TextView
-                    android:id="@+id/register_expect_end_date_text_view"
+                    android:id="@+id/modify_expect_end_date_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="15sp"
@@ -217,7 +217,7 @@
                 android:background="@drawable/bg_gray7_rectangle">
 
                 <TextView
-                    android:id="@+id/register_real_start_date_text_view"
+                    android:id="@+id/modify_real_start_date_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="15sp"
@@ -263,7 +263,7 @@
                 android:background="@drawable/bg_gray7_rectangle">
 
                 <TextView
-                    android:id="@+id/register_real_end_date_text_view"
+                    android:id="@+id/modify_real_end_date_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="15sp"
@@ -278,7 +278,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/register_construction_type_linear_layout"
+            android:id="@+id/modify_construction_type_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -307,7 +307,7 @@
                 android:background="@drawable/bg_gray7_rectangle">
 
                 <Spinner
-                    android:id="@+id/register_construction_type_spinner"
+                    android:id="@+id/modify_construction_type_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp" />
@@ -316,7 +316,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/register_construction_type_specific_linear_layout"
+            android:id="@+id/modify_construction_type_specific_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -346,7 +346,7 @@
                 android:background="@drawable/bg_gray7_rectangle">
 
                 <Spinner
-                    android:id="@+id/register_construction_type_specific_spinner"
+                    android:id="@+id/modify_construction_type_specific_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp" />
@@ -383,7 +383,7 @@
                 android:background="@drawable/bg_gray7_rectangle">
 
                 <Spinner
-                    android:id="@+id/register_delay_cause_one_spinner"
+                    android:id="@+id/modify_delay_cause_one_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp" />
@@ -392,7 +392,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/register_delay_cause_specific_one_linear_layout"
+            android:id="@+id/modify_delay_cause_specific_one_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -422,7 +422,7 @@
                 android:background="@drawable/bg_gray7_rectangle">
 
                 <Spinner
-                    android:id="@+id/register_delay_cause_specific_one_spinner"
+                    android:id="@+id/modify_delay_cause_specific_one_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp" />
@@ -459,7 +459,7 @@
                 android:background="@drawable/bg_gray7_rectangle">
 
                 <Spinner
-                    android:id="@+id/register_delay_cause_two_spinner"
+                    android:id="@+id/modify_delay_cause_two_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp" />
@@ -468,7 +468,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/register_delay_cause_specific_two_linear_layout"
+            android:id="@+id/modify_delay_cause_specific_two_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -498,7 +498,7 @@
                 android:background="@drawable/bg_gray7_rectangle">
 
                 <Spinner
-                    android:id="@+id/register_delay_cause_specific_two_spinner"
+                    android:id="@+id/modify_delay_cause_specific_two_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp" />
@@ -535,7 +535,7 @@
                 android:background="@drawable/bg_gray7_rectangle">
 
                 <TextView
-                    android:id="@+id/register_save_path_text_view"
+                    android:id="@+id/modify_save_path_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
@@ -553,20 +553,20 @@
 
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/register_camera_recycler_view"
+                android:id="@+id/modify_camera_recycler_view"
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <LinearLayout
-                android:id="@+id/register_camera_linear_layout"
+                android:id="@+id/modify_camera_linear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_gray7_rectangle"
                 android:gravity="center">
 
                 <ImageView
-                    android:id="@+id/register_camera_image_view"
+                    android:id="@+id/modify_camera_image_view"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
@@ -581,7 +581,7 @@
             android:background="@drawable/bg_gray7_rectangle">
 
             <EditText
-                android:id="@+id/register_picture_describe_edit_text"
+                android:id="@+id/modify_picture_describe_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"

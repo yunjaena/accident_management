@@ -96,6 +96,91 @@
             </LinearLayout>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:weightSum="10">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/bg_gray7_rectangle"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/expect_start_date" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:background="@drawable/bg_gray7_rectangle">
+
+                <TextView
+                    android:id="@+id/report_detail_expect_start_date_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="10dp"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    tools:text="rvrvrvr" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:weightSum="10">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/bg_gray7_rectangle"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/expect_end_date" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:background="@drawable/bg_gray7_rectangle">
+
+                <TextView
+                    android:id="@+id/report_detail_expect_end_date_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="10dp"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    tools:text="rvrvrvr" />
+
+            </LinearLayout>
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -485,9 +570,11 @@
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/report_detail_camera_frame_layout"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_margin="10dp">
+            android:layout_margin="10dp"
+            >
 
 
             <androidx.recyclerview.widget.RecyclerView
@@ -503,7 +590,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
-            android:text="@string/design_change_and_error" />
+            android:text="@string/picture_describe" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -512,89 +599,15 @@
             android:background="@drawable/bg_gray7_rectangle">
 
             <TextView
-                android:id="@+id/report_detail_design_change_and_error_text_view"
+                android:id="@+id/report_detail_picture_describe_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:paddingTop="50dp"
-                android:textColor="@color/black"
-                android:paddingBottom="50dp" />
+                android:paddingBottom="50dp"
+                android:textColor="@color/black" />
 
         </LinearLayout>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:text="@string/contract_change_and_violation" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/bg_gray7_rectangle">
-
-            <TextView
-                android:id="@+id/report_detail_contract_change_and_violation_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:paddingTop="50dp"
-                android:textColor="@color/black"
-                android:paddingBottom="50dp" />
-
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:text="@string/inevitable_clause" />
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/bg_gray7_rectangle">
-
-            <TextView
-                android:id="@+id/report_detail_inevitable_clause_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:layout_margin="10dp"
-                android:paddingTop="50dp"
-                android:paddingBottom="50dp" />
-
-        </LinearLayout>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:text="@string/concurrent_occurrence" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/bg_gray7_rectangle">
-
-            <TextView
-                android:id="@+id/report_detail_concurrent_occurrence_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:layout_margin="10dp"
-                android:paddingTop="50dp"
-                android:paddingBottom="50dp" />
-
-        </LinearLayout>
-
-
     </LinearLayout>
 
 </ScrollView>

@@ -6,6 +6,7 @@ import androidx.annotation.Keep;
 
 import com.google.firebase.database.Exclude;
 import com.yunjaena.accident_management.util.DateUtil;
+import com.yunjaena.accident_management.util.StringUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ public class Report implements Serializable {
     public String updateDate;
     public String companyName;
     public String accidentDate;
+    public String expectStartDate;
+    public String expectEndDate;
     public String realStartDate;
     public String realEndDate;
     public int constructType;
@@ -29,10 +32,7 @@ public class Report implements Serializable {
     public int delayCauseTwo;
     public int delayCauseDetailTwo;
     public int savePath;
-    public String designChangeAndError;
-    public String contractChangeAndViolation;
-    public String inevitableClause;
-    public String concurrentOccurrence;
+    public String pictureDescribe;
     public String imageFileArrayString;
     @Exclude
     public List<String> imageFileName;
@@ -51,21 +51,44 @@ public class Report implements Serializable {
         this.accidentDate = builder.accidentDate;
         this.realStartDate = builder.realStartDate;
         this.realEndDate = builder.realEndDate;
+        this.expectStartDate = builder.expectStartDate;
+        this.expectEndDate = builder.expectEndDate;
         this.constructType = builder.constructType;
         this.constructDetailType = builder.constructDetailType;
-        this.designChangeAndError = builder.designChangeAndError;
+        this.pictureDescribe = builder.pictureDescribe;
         this.delayCauseOne = builder.delayCauseOne;
         this.delayCauseDetailOne = builder.delayCauseDetailOne;
         this.delayCauseTwo = builder.delayCauseTwo;
         this.delayCauseDetailTwo = builder.delayCauseDetailTwo;
         this.savePath = builder.savePath;
-        this.contractChangeAndViolation = builder.contractChangeAndViolation;
-        this.inevitableClause = builder.inevitableClause;
-        this.concurrentOccurrence = builder.concurrentOccurrence;
         this.imageFileArrayString = builder.imageFileArrayString;
         this.imageFileName = builder.imageFileName;
         this.imageBitmap = builder.imageBitmap;
         this.isDelete = builder.isDelete;
+    }
+
+    public Report(ReportSerial reportSerial){
+        this.id = reportSerial.id;
+        this.saveDate = reportSerial.saveDate;
+        this.updateDate = reportSerial.updateDate;
+        this.companyName = reportSerial.companyName;
+        this.accidentDate = reportSerial.accidentDate;
+        this.realStartDate = reportSerial.realStartDate;
+        this.realEndDate = reportSerial.realEndDate;
+        this.expectStartDate = reportSerial.expectStartDate;
+        this.expectEndDate = reportSerial.expectEndDate;
+        this.constructType = reportSerial.constructType;
+        this.constructDetailType = reportSerial.constructDetailType;
+        this.pictureDescribe = reportSerial.pictureDescribe;
+        this.delayCauseOne = reportSerial.delayCauseOne;
+        this.delayCauseDetailOne = reportSerial.delayCauseDetailOne;
+        this.delayCauseTwo = reportSerial.delayCauseTwo;
+        this.delayCauseDetailTwo = reportSerial.delayCauseDetailTwo;
+        this.savePath = reportSerial.savePath;
+        this.imageFileArrayString = reportSerial.imageFileArrayString;
+        this.imageFileName = new ArrayList<>();
+        this.imageBitmap = new ArrayList<>();
+        this.isDelete = reportSerial.isDelete;
     }
 
     public String getId() {
@@ -164,36 +187,12 @@ public class Report implements Serializable {
         this.savePath = savePath;
     }
 
-    public String getDesignChangeAndError() {
-        return designChangeAndError;
+    public String getPictureDescribe() {
+        return pictureDescribe;
     }
 
-    public void setDesignChangeAndError(String designChangeAndError) {
-        this.designChangeAndError = designChangeAndError;
-    }
-
-    public String getContractChangeAndViolation() {
-        return contractChangeAndViolation;
-    }
-
-    public void setContractChangeAndViolation(String contractChangeAndViolation) {
-        this.contractChangeAndViolation = contractChangeAndViolation;
-    }
-
-    public String getInevitableClause() {
-        return inevitableClause;
-    }
-
-    public void setInevitableClause(String inevitableClause) {
-        this.inevitableClause = inevitableClause;
-    }
-
-    public String getConcurrentOccurrence() {
-        return concurrentOccurrence;
-    }
-
-    public void setConcurrentOccurrence(String concurrentOccurrence) {
-        this.concurrentOccurrence = concurrentOccurrence;
+    public void setPictureDescribe(String pictureDescribe) {
+        this.pictureDescribe = pictureDescribe;
     }
 
     public String getImageFileArrayString() {
@@ -245,6 +244,22 @@ public class Report implements Serializable {
         this.realEndDate = realEndDate;
     }
 
+    public String getExpectStartDate() {
+        return expectStartDate;
+    }
+
+    public void setExpectStartDate(String expectStartDate) {
+        this.expectStartDate = expectStartDate;
+    }
+
+    public List<String> getImageFileArray() {
+        return StringUtil.stringToStringList(imageFileArrayString);
+    }
+
+    public String getExpectEndDate() {
+        return expectEndDate;
+    }
+
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
@@ -253,6 +268,8 @@ public class Report implements Serializable {
         result.put("updateDate", updateDate);
         result.put("companyName", companyName);
         result.put("accidentDate", accidentDate);
+        result.put("expectStartDate", expectStartDate);
+        result.put("expectEndDate", expectEndDate);
         result.put("realStartDate", realStartDate);
         result.put("realEndDate", realEndDate);
         result.put("constructType", constructType);
@@ -261,11 +278,8 @@ public class Report implements Serializable {
         result.put("delayCauseDetailOne", delayCauseDetailOne);
         result.put("delayCauseTwo", delayCauseTwo);
         result.put("delayCauseDetailTwo", delayCauseDetailTwo);
-        result.put("designChangeAndError", designChangeAndError);
+        result.put("pictureDescribe", pictureDescribe);
         result.put("savePath", savePath);
-        result.put("contractChangeAndViolation", contractChangeAndViolation);
-        result.put("inevitableClause", inevitableClause);
-        result.put("concurrentOccurrence", concurrentOccurrence);
         result.put("imageFileArrayString", imageFileArrayString);
         result.put("isDelete", isDelete);
         return result;
@@ -280,6 +294,8 @@ public class Report implements Serializable {
                 ", updateDate='" + updateDate + '\'' +
                 ", companyName='" + companyName + '\'' +
                 ", accidentDate='" + accidentDate + '\'' +
+                ", expectStartDate='" + expectStartDate + '\'' +
+                ", expectEndDate='" + expectEndDate + '\'' +
                 ", realStartDate='" + realStartDate + '\'' +
                 ", realEndDate='" + realEndDate + '\'' +
                 ", constructType=" + constructType +
@@ -289,10 +305,7 @@ public class Report implements Serializable {
                 ", delayCauseTwo=" + delayCauseTwo +
                 ", delayCauseDetailTwo=" + delayCauseDetailTwo +
                 ", savePath=" + savePath +
-                ", designChangeAndError='" + designChangeAndError + '\'' +
-                ", contractChangeAndViolation='" + contractChangeAndViolation + '\'' +
-                ", inevitableClause='" + inevitableClause + '\'' +
-                ", concurrentOccurrence='" + concurrentOccurrence + '\'' +
+                ", pictureDescribe='" + pictureDescribe + '\'' +
                 ", imageFileArrayString='" + imageFileArrayString + '\'' +
                 ", imageFileName=" + imageFileName +
                 ", imageBitmap=" + imageBitmap +
@@ -305,9 +318,11 @@ public class Report implements Serializable {
         private String saveDate = DateUtil.getCurrentDate();
         private String updateDate = DateUtil.getCurrentDate();
         private String companyName = "";
-        private String accidentDate = DateUtil.getCurrentDate();
-        private String realStartDate = DateUtil.getCurrentDate();
-        private String realEndDate = DateUtil.getCurrentDate();
+        private String accidentDate = "";
+        private String expectStartDate = "";
+        private String expectEndDate = "";
+        private String realStartDate = "";
+        private String realEndDate = "";
         private int constructType = -1;
         private int constructDetailType = -1;
         private int delayCauseOne = -1;
@@ -315,10 +330,7 @@ public class Report implements Serializable {
         private int delayCauseTwo = -1;
         private int delayCauseDetailTwo = -1;
         private int savePath = -1;
-        private String designChangeAndError = "";
-        private String contractChangeAndViolation = "";
-        private String inevitableClause = "";
-        private String concurrentOccurrence = "";
+        private String pictureDescribe = "";
         private String imageFileArrayString = "";
         private List<String> imageFileName = new ArrayList<>();
         private List<Bitmap> imageBitmap = new ArrayList<>();
@@ -339,6 +351,16 @@ public class Report implements Serializable {
 
         public Builder updateDate(String updateDate) {
             this.updateDate = updateDate;
+            return this;
+        }
+
+        public Builder expectStartDate(String expectStartDate) {
+            this.expectStartDate = expectStartDate;
+            return this;
+        }
+
+        public Builder expectEndDate(String expectEndDate) {
+            this.expectEndDate = expectEndDate;
             return this;
         }
 
@@ -397,23 +419,8 @@ public class Report implements Serializable {
             return this;
         }
 
-        public Builder designChangeAndError(String designChangeAndError) {
-            this.designChangeAndError = designChangeAndError;
-            return this;
-        }
-
-        public Builder contractChangeAndViolation(String contractChangeAndViolation) {
-            this.contractChangeAndViolation = contractChangeAndViolation;
-            return this;
-        }
-
-        public Builder inevitableClause(String inevitableClause) {
-            this.inevitableClause = inevitableClause;
-            return this;
-        }
-
-        public Builder concurrentOccurrence(String concurrentOccurrence) {
-            this.concurrentOccurrence = concurrentOccurrence;
+        public Builder pictureDescribe(String pictureDescribe) {
+            this.pictureDescribe = pictureDescribe;
             return this;
         }
 

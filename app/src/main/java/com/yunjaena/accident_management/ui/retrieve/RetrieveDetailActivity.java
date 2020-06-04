@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,15 +22,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yunjaena.accident_management.R;
-import com.yunjaena.accident_management.data.network.entity.Report;
 import com.yunjaena.accident_management.data.network.entity.ReportSerial;
 import com.yunjaena.accident_management.data.network.interactor.ReportFirebaseInteractor;
+import com.yunjaena.accident_management.ui.modify.ModifyActivity;
 import com.yunjaena.accident_management.ui.resgister.ConstructType;
 import com.yunjaena.accident_management.ui.resgister.DelayCause;
 import com.yunjaena.accident_management.ui.retrieve.adapter.ReportImageAdapter;
 import com.yunjaena.accident_management.ui.retrieve.presenter.RetrieveDetailContract;
 import com.yunjaena.accident_management.ui.retrieve.presenter.RetrieveDetailPresenter;
 import com.yunjaena.accident_management.util.DateUtil;
+import com.yunjaena.accident_management.util.FileUtil;
 import com.yunjaena.core.activity.ActivityBase;
 import com.yunjaena.core.recyclerview.RecyclerViewClickListener;
 import com.yunjaena.core.toast.ToastUtil;
@@ -56,6 +58,8 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
     private ReportSerial reportSerial;
     private TextView companyNameTextView;
     private TextView accidentDateTextView;
+    private TextView expectStartDayTextView;
+    private TextView expectEndDayTextView;
     private TextView realStartDayTextView;
     private TextView realEndDayTextView;
     private TextView constructionTypeTextView;
@@ -66,10 +70,8 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
     private TextView reportDelayCauseTwoSpecificTextView;
     private TextView savePathTextView;
     private RecyclerView cameraRecyclerView;
-    private TextView designChangeAndErrorTextView;
-    private TextView contractChangeAndViolationTextView;
-    private TextView inevitableClauseTextView;
-    private TextView concurrentOccurrenceTextView;
+    private TextView pictureDescribeTextView;
+    private FrameLayout cameraFrameLayout;
     private List<String> bitmapList;
     private LinearLayoutManager linearLayoutManager;
     private ReportImageAdapter reportImageAdapter;
@@ -97,6 +99,8 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
         retrieveDetailPresenter = new RetrieveDetailPresenter(this, new ReportFirebaseInteractor());
         companyNameTextView = findViewById(R.id.report_detail_company_name_text_view);
         accidentDateTextView = findViewById(R.id.report_detail_accident_date_text_viewt);
+        expectStartDayTextView = findViewById(R.id.report_detail_expect_start_date_text_view);
+        expectEndDayTextView = findViewById(R.id.report_detail_expect_end_date_text_view);
         realStartDayTextView = findViewById(R.id.report_detail_real_start_date_text_view);
         realEndDayTextView = findViewById(R.id.report_detail_real_end_date_text_view);
         constructionTypeTextView = findViewById(R.id.report_detail_construction_type_text_view);
@@ -107,13 +111,15 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
         reportDelayCauseTwoSpecificTextView = findViewById(R.id.report_detail_delay_cause_specific_two_text_view);
         savePathTextView = findViewById(R.id.report_detail_save_path_text_view);
         cameraRecyclerView = findViewById(R.id.report_detail_camera_recycler_view);
-        designChangeAndErrorTextView = findViewById(R.id.report_detail_design_change_and_error_text_view);
-        contractChangeAndViolationTextView = findViewById(R.id.report_detail_contract_change_and_violation_text_view);
-        inevitableClauseTextView = findViewById(R.id.report_detail_inevitable_clause_text_view);
-        concurrentOccurrenceTextView = findViewById(R.id.report_detail_concurrent_occurrence_text_view);
+        pictureDescribeTextView = findViewById(R.id.report_detail_picture_describe_text_view);
+        cameraFrameLayout = findViewById(R.id.report_detail_camera_frame_layout);
         bitmapList = new ArrayList<>();
-        if (reportSerial.getImageFileArray() != null)
+        if (reportSerial.getImageFileArray() != null && !reportSerial.getImageFileArray().isEmpty()) {
             bitmapList.addAll(reportSerial.getImageFileArray());
+        } else {
+            cameraFrameLayout.setVisibility(View.GONE);
+        }
+
         updateUI();
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         initRecyclerView();
@@ -123,6 +129,8 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
     public void updateUI() {
         companyNameTextView.setText(reportSerial.getCompanyName());
         accidentDateTextView.setText(reportSerial.getAccidentDate());
+        expectStartDayTextView.setText(reportSerial.getExpectStartDate());
+        expectEndDayTextView.setText(reportSerial.getExpectEndDate());
         realStartDayTextView.setText(reportSerial.getRealStartDate());
         realEndDayTextView.setText(reportSerial.getRealEndDate());
         constructionTypeTextView.setText(getConstructTypeText(reportSerial.getConstructType()));
@@ -132,11 +140,7 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
         reportDelayCauseTwoTextView.setText(getDelayCauseText(reportSerial.getDelayCauseTwo()));
         reportDelayCauseTwoSpecificTextView.setText((getDelayDetailCauseText(reportSerial.getDelayCauseTwo(), reportSerial.getDelayCauseDetailTwo())));
         savePathTextView.setText(getSaveText(reportSerial.getSavePath()));
-        designChangeAndErrorTextView.setText(reportSerial.getDesignChangeAndError());
-        contractChangeAndViolationTextView.setText(reportSerial.getContractChangeAndViolation());
-        inevitableClauseTextView.setText(reportSerial.getInevitableClause());
-        concurrentOccurrenceTextView.setText(reportSerial.getConcurrentOccurrence());
-
+        pictureDescribeTextView.setText(reportSerial.getPictureDescribe());
     }
 
     public void initRecyclerView() {
@@ -166,6 +170,9 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_modify:
+                goToModify();
+                break;
             case R.id.action_delete:
                 showDeleteAlertDialog();
                 break;
@@ -174,6 +181,16 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void goToModify() {
+        Intent intent = new Intent(this, ModifyActivity.class);
+        intent.putExtra(RetrieveActivity.REPORT, reportSerial);
+        startActivity(intent);
+        Intent flagIntent = new Intent();
+        flagIntent.putExtra("IS_DELETE", true);
+        setResult(RESULT_OK, flagIntent);
+        finish();
     }
 
     public void showDeleteAlertDialog() {
@@ -295,7 +312,7 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
         String fileName = "k-cm" + DateUtil.getCurrentDateWithOutTimeWithOutDot() + ".xls";
         Intent exportIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         exportIntent.addCategory(Intent.CATEGORY_OPENABLE);
-        exportIntent.setType("text/csv");
+        exportIntent.setType("application/excel");
         exportIntent.putExtra(Intent.EXTRA_TITLE, fileName);
         startActivityForResult(exportIntent, FILE_EXPORT_REQUEST_CODE);
     }
@@ -334,17 +351,22 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.select).setMessage(R.string.send_at_email);
         builder.setPositiveButton(R.string.okay, (dialog, id) -> {
-            Uri uri = Uri.parse("mailto:");
-            Intent it = new Intent(Intent.ACTION_SENDTO, uri);
-            it.putExtra(Intent.EXTRA_SUBJECT, "excel file 전송");
-            it.putExtra(Intent.EXTRA_STREAM, fileUri);
-            startActivity(it);
+            try {
+                Uri uri = Uri.parse("mailto:");
+                Intent it = new Intent(Intent.ACTION_SENDTO, uri);
+                it.putExtra(Intent.EXTRA_SUBJECT, "excel file 전송");
+                it.putExtra(Intent.EXTRA_STREAM, FileUtil.getFilePathFromUri(fileUri, getApplicationContext()));
+                startActivity(it);
+            } catch (IOException e) {
+                ToastUtil.getInstance().makeShort(R.string.upload_failed);
+            }
         });
 
         builder.setNegativeButton(R.string.cancel, null);
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
 
     public Workbook saveExcelFileExecute() {
         Workbook wb = new HSSFWorkbook();
@@ -366,22 +388,22 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
         cell = row.createCell(6);
         cell.setCellValue(getResources().getString(R.string.excel_real_end_date));
         int rowIndex = 1;
-            if (!reportSerial.isDelete()) {
-                row = sheet1.createRow(rowIndex);
-                cell = row.createCell(0);
-                cell.setCellValue(reportSerial.getCompanyName());
-                cell = row.createCell(1);
-                cell.setCellValue(reportSerial.getAccidentDate());
-                cell = row.createCell(2);
-                cell.setCellValue(getConstructTypeText(reportSerial.getConstructType()));
-                cell = row.createCell(3);
-                cell.setCellValue(getDelayDetailCauseText(reportSerial.getDelayCauseOne(), reportSerial.getDelayCauseDetailOne()));
-                cell = row.createCell(4);
-                cell.setCellValue(getDelayDetailCauseText(reportSerial.getDelayCauseTwo(), reportSerial.getDelayCauseDetailTwo()));
-                cell = row.createCell(5);
-                cell.setCellValue(reportSerial.getRealStartDate());
-                cell = row.createCell(6);
-                cell.setCellValue(reportSerial.getRealEndDate());
+        if (!reportSerial.isDelete()) {
+            row = sheet1.createRow(rowIndex);
+            cell = row.createCell(0);
+            cell.setCellValue(reportSerial.getCompanyName());
+            cell = row.createCell(1);
+            cell.setCellValue(reportSerial.getAccidentDate());
+            cell = row.createCell(2);
+            cell.setCellValue(getConstructTypeText(reportSerial.getConstructType()));
+            cell = row.createCell(3);
+            cell.setCellValue(getDelayDetailCauseText(reportSerial.getDelayCauseOne(), reportSerial.getDelayCauseDetailOne()));
+            cell = row.createCell(4);
+            cell.setCellValue(getDelayDetailCauseText(reportSerial.getDelayCauseTwo(), reportSerial.getDelayCauseDetailTwo()));
+            cell = row.createCell(5);
+            cell.setCellValue(reportSerial.getRealStartDate());
+            cell = row.createCell(6);
+            cell.setCellValue(reportSerial.getRealEndDate());
         }
         return wb;
     }
@@ -391,7 +413,7 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-           if (requestCode == FILE_EXPORT_REQUEST_CODE && data != null) {
+            if (requestCode == FILE_EXPORT_REQUEST_CODE && data != null) {
                 Uri uri = data.getData();
                 if (uri != null) {
                     saveFileQ(uri);

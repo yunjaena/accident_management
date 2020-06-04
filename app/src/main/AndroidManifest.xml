@@ -32,6 +32,7 @@
             android:name=".ui.resgister.RegisterActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".ui.retrieve.RetrieveDetailActivity" />
+        <activity android:name=".ui.modify.ModifyActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

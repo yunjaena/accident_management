@@ -11,6 +11,10 @@
     <string name="loading">로딩중</string>
     <string name="deleting">삭제중</string>
     <string name="delete">삭제</string>
+    <string name="modify">수정</string>
+    <string name="modifying">수정중</string>
+    <string name="modify_complete">수정 완료</string>
+    <string name="modify_fail">수정 실패</string>
     <string name="change">변환</string>
     <string name="delete_success">삭제되었습니다.</string>
     <string name="delete_confirm">삭제하시겠습니까?</string>
@@ -21,6 +25,10 @@
     <string name="accident_date">발생 일자</string>
     <string name="construction_type">공사 종류</string>
     <string name="construction_type_specific">공사 종류\n(상세)</string>
+    <string name="expect_start_date">공사시작\n예정일</string>
+    <string name="expect_start_date_no_enter">공사시작 예정일</string>
+    <string name="expect_end_date">공사완료\n예정일</string>
+    <string name="expect_end_date_no_enter">공사완료 예정일</string>
     <string name="real_start_date">실제\n시작일</string>
     <string name="real_start_date_no_enter">실제 시작일</string>
     <string name="real_end_date">실제\n완료일</string>
@@ -30,6 +38,7 @@
     <string name="save_path">저장 경로</string>
     <string name="design_change_and_error">설계 변경 및 오류</string>
     <string name="contract_change_and_violation">계약 변경 및 위반</string>
+    <string name="picture_describe">사진 설명</string>
     <string name="inevitable_clause">불가항적 조항</string>
     <string name="concurrent_occurrence">동시지연 발생</string>
     <string name="image_fail">이미지를 불러오는것에 실패했습니다.</string>
@@ -38,6 +47,7 @@
     <string name="input_all_waring">전체 항목을 입력하셨는지 확인해주세요.</string>
     <string name="input_picture_waring">사진을 1장이상 첨부해주세요.</string>
     <string name="time_faster_than_before_warning">실제완료일이 실제시작일 보다 빠르거나 같을 수 없습니다.</string>
+    <string name="expect_time_faster_than_before_warning">예정 완료일이 예정 시작일 보다 빠르거나 같을 수 없습니다.</string>
     <string name="saved_failed">저장에 실패했습니다.</string>
     <string name="need_write_permission_title">쓰기 권한</string>
     <string name="select">선택</string>

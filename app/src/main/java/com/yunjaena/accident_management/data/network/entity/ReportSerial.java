@@ -9,6 +9,8 @@ public class ReportSerial implements Serializable {
     public String id;
     public String saveDate;
     public String updateDate;
+    public String expectStartDate;
+    public String expectEndDate;
     public String companyName;
     public String accidentDate;
     public String realStartDate;
@@ -20,10 +22,7 @@ public class ReportSerial implements Serializable {
     public int delayCauseTwo;
     public int delayCauseDetailTwo;
     public int savePath;
-    public String designChangeAndError;
-    public String contractChangeAndViolation;
-    public String inevitableClause;
-    public String concurrentOccurrence;
+    public String pictureDescribe;
     public String imageFileArrayString;
     public boolean isDelete;
 
@@ -36,19 +35,18 @@ public class ReportSerial implements Serializable {
         this.updateDate = report.updateDate;
         this.companyName = report.companyName;
         this.accidentDate = report.accidentDate;
+        this.expectStartDate = report.expectStartDate;
+        this.expectEndDate = report.expectEndDate;
         this.realStartDate = report.realStartDate;
         this.realEndDate = report.realEndDate;
         this.constructType = report.constructType;
         this.constructDetailType = report.constructDetailType;
-        this.designChangeAndError = report.designChangeAndError;
+        this.pictureDescribe = report.pictureDescribe;
         this.delayCauseOne = report.delayCauseOne;
         this.delayCauseDetailOne = report.delayCauseDetailOne;
         this.delayCauseTwo = report.delayCauseTwo;
         this.delayCauseDetailTwo = report.delayCauseDetailTwo;
         this.savePath = report.savePath;
-        this.contractChangeAndViolation = report.contractChangeAndViolation;
-        this.inevitableClause = report.inevitableClause;
-        this.concurrentOccurrence = report.concurrentOccurrence;
         this.imageFileArrayString = report.imageFileArrayString;
         this.isDelete = report.isDelete;
     }
@@ -165,38 +163,6 @@ public class ReportSerial implements Serializable {
         this.savePath = savePath;
     }
 
-    public String getDesignChangeAndError() {
-        return designChangeAndError;
-    }
-
-    public void setDesignChangeAndError(String designChangeAndError) {
-        this.designChangeAndError = designChangeAndError;
-    }
-
-    public String getContractChangeAndViolation() {
-        return contractChangeAndViolation;
-    }
-
-    public void setContractChangeAndViolation(String contractChangeAndViolation) {
-        this.contractChangeAndViolation = contractChangeAndViolation;
-    }
-
-    public String getInevitableClause() {
-        return inevitableClause;
-    }
-
-    public void setInevitableClause(String inevitableClause) {
-        this.inevitableClause = inevitableClause;
-    }
-
-    public String getConcurrentOccurrence() {
-        return concurrentOccurrence;
-    }
-
-    public void setConcurrentOccurrence(String concurrentOccurrence) {
-        this.concurrentOccurrence = concurrentOccurrence;
-    }
-
     public String getImageFileArrayString() {
         return imageFileArrayString;
     }
@@ -215,5 +181,29 @@ public class ReportSerial implements Serializable {
 
     public void setDelete(boolean delete) {
         isDelete = delete;
+    }
+
+    public String getPictureDescribe() {
+        return pictureDescribe;
+    }
+
+    public void setPictureDescribe(String pictureDescribe) {
+        this.pictureDescribe = pictureDescribe;
+    }
+
+    public String getExpectStartDate() {
+        return expectStartDate;
+    }
+
+    public void setExpectStartDate(String expectStartDate) {
+        this.expectStartDate = expectStartDate;
+    }
+
+    public String getExpectEndDate() {
+        return expectEndDate;
+    }
+
+    public void setExpectEndDate(String expectEndDate) {
+        this.expectEndDate = expectEndDate;
     }
 }

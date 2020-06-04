@@ -12,7 +12,11 @@ public class StringUtil {
     }
 
     public static List<String> stringToStringList(String string) {
-        String[] s = string.split(",");
-        return new ArrayList<>(Arrays.asList(s));
+        if (string.length() >= 1) {
+            String[] s = string.split(",");
+            return new ArrayList<>(Arrays.asList(s));
+        } else{
+            return new ArrayList<>();
+        }
     }
 }
