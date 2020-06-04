@@ -91,8 +91,8 @@ public class RetrieveActivity extends ActivityBase implements RetrieveContract.V
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == REPORT_DETAIL) {
-            if (requestCode == RESULT_OK && data != null) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REPORT_DETAIL && data != null) {
                     if(data.getBooleanExtra("IS_DELETE",false)){
                         retrievePresenter.getReport();
                     }

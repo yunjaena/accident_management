@@ -67,6 +67,19 @@ public class ReportFirebaseInteractor implements ReportInteractor {
     }
 
     @Override
+    public Observable<Boolean> deleteReport(String id) {
+        return Observable.create(subscriber -> {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            Task<Void> task = reference.child("report_list").child(id).child("isDelete").setValue(true);
+            task.addOnFailureListener(subscriber::onError)
+                    .addOnSuccessListener(aVoid -> {
+                subscriber.onNext(true);
+                subscriber.onComplete();
+            });
+        });
+    }
+
+    @Override
     public Observable<List<String>> saveImage(List<Bitmap> bitmapList) {
         List<Observable<String>> imageStringList = new ArrayList<>();
         for (Bitmap bitmap : bitmapList) {

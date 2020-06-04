@@ -1,6 +1,10 @@
 package com.yunjaena.accident_management.ui.retrieve;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,17 +14,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.yunjaena.accident_management.R;
 import com.yunjaena.accident_management.data.network.entity.ReportSerial;
+import com.yunjaena.accident_management.data.network.interactor.ReportFirebaseInteractor;
 import com.yunjaena.accident_management.ui.resgister.ConstructType;
 import com.yunjaena.accident_management.ui.resgister.DelayCause;
 import com.yunjaena.accident_management.ui.retrieve.adapter.ReportImageAdapter;
+import com.yunjaena.accident_management.ui.retrieve.presenter.RetrieveDetailContract;
+import com.yunjaena.accident_management.ui.retrieve.presenter.RetrieveDetailPresenter;
 import com.yunjaena.core.activity.ActivityBase;
 import com.yunjaena.core.recyclerview.RecyclerViewClickListener;
+import com.yunjaena.core.toast.ToastUtil;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RetrieveDetailActivity extends ActivityBase {
+public class RetrieveDetailActivity extends ActivityBase implements RetrieveDetailContract.View {
     private ReportSerial reportSerial;
     private TextView companyNameTextView;
     private TextView accidentDateTextView;
@@ -41,6 +49,7 @@ public class RetrieveDetailActivity extends ActivityBase {
     private List<String> bitmapList;
     private LinearLayoutManager linearLayoutManager;
     private ReportImageAdapter reportImageAdapter;
+    private RetrieveDetailPresenter retrieveDetailPresenter;
 
     public static int getResId(String resName, Class<?> c) {
         try {
@@ -61,6 +70,7 @@ public class RetrieveDetailActivity extends ActivityBase {
     }
 
     public void init() {
+        retrieveDetailPresenter = new RetrieveDetailPresenter(this, new ReportFirebaseInteractor());
         companyNameTextView = findViewById(R.id.report_detail_company_name_text_view);
         accidentDateTextView = findViewById(R.id.report_detail_accident_date_text_viewt);
         realStartDayTextView = findViewById(R.id.report_detail_real_start_date_text_view);
@@ -123,6 +133,33 @@ public class RetrieveDetailActivity extends ActivityBase {
         reportImageAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_report_detail, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                showDeleteAlertDialog();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void showDeleteAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.delete).setMessage(R.string.delete_confirm);
+        builder.setPositiveButton(R.string.okay, (dialog, id) -> {
+            retrieveDetailPresenter.deleteReport(reportSerial.getId());
+        });
+        builder.setNegativeButton(R.string.cancel, null);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
     public String getConstructTypeText(int index) {
         if (index == -1)
             return getResources().getString(R.string.none);
@@ -158,5 +195,50 @@ public class RetrieveDetailActivity extends ActivityBase {
             return getResources().getString(R.string.none);
 
         return getResources().getStringArray(R.array.save_path)[index];
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        retrieveDetailPresenter.releaseView();
+    }
+
+    @Override
+    public void showProgress(String message) {
+        showProgressDialog(message);
+    }
+
+    @Override
+    public void showProgress(int message) {
+        showProgressDialog(message);
+    }
+
+    @Override
+    public void hideProgress() {
+        hideProgressDialog();
+    }
+
+    @Override
+    public void showMessage(String message) {
+        ToastUtil.getInstance().makeShort(message);
+    }
+
+    @Override
+    public void showMessage(int message) {
+        ToastUtil.getInstance().makeShort(message);
+    }
+
+    @Override
+    public void showSuccessDelete() {
+        Intent intent = new Intent();
+        intent.putExtra("IS_DELETE", true);
+        setResult(RESULT_OK, intent);
+        ToastUtil.getInstance().makeShort(R.string.delete_success);
+        finish();
+    }
+
+    @Override
+    public void setPresenter(RetrieveDetailPresenter presenter) {
+        this.retrieveDetailPresenter = presenter;
     }
 }

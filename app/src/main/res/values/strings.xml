@@ -9,6 +9,11 @@
     <string name="okay">확인</string>
     <string name="uploading">업로드 중</string>
     <string name="loading">로딩중</string>
+    <string name="deleting">삭제중</string>
+    <string name="delete">삭제</string>
+    <string name="delete_success">삭제되었습니다.</string>
+    <string name="delete_confirm">삭제하시겠습니까?</string>
+    <string name="deleting_fail">삭제에 실패하였습니다.</string>
     <string name="cancel">취소</string>
     <string name="saving">저장중</string>
     <string name="company_name">업 체 명</string>

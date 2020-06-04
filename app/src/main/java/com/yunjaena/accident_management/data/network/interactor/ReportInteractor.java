@@ -11,4 +11,6 @@ public interface ReportInteractor {
     Observable<List<String>> saveImage(List<Bitmap> bitmapList);
 
     Observable<List<Report>> loadAllReport();
+
+    Observable<Boolean> deleteReport(String id);
 }
