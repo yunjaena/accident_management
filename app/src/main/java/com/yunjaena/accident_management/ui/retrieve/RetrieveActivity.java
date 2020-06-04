@@ -96,7 +96,7 @@ public class RetrieveActivity extends ActivityBase implements RetrieveContract.V
         reportAdapter.setRecyclerViewClickListener(new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
-                itemSelect(selectPosition);
+                itemSelect(position);
             }
 
             @Override
@@ -126,22 +126,7 @@ public class RetrieveActivity extends ActivityBase implements RetrieveContract.V
         startActivityForResult(intent, REPORT_DETAIL);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REPORT_DETAIL && data != null) {
-                if (data.getBooleanExtra("IS_DELETE", false)) {
-                    retrievePresenter.getReport();
-                }
-            } else if (requestCode == FILE_EXPORT_REQUEST_CODE && data != null) {
-                Uri uri = data.getData();
-                if (uri != null) {
-                    saveFileQ(uri);
-                }
-            }
-        }
-    }
+
 
     @Override
     protected void onDestroy() {
@@ -366,6 +351,24 @@ public class RetrieveActivity extends ActivityBase implements RetrieveContract.V
             }
         }
         return wb;
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REPORT_DETAIL && data != null) {
+                if (data.getBooleanExtra("IS_DELETE", false)) {
+                    retrievePresenter.getReport();
+                }
+            } else if (requestCode == FILE_EXPORT_REQUEST_CODE && data != null) {
+                Uri uri = data.getData();
+                if (uri != null) {
+                    saveFileQ(uri);
+                }
+            }
+        }
     }
 
     public boolean isWritePermissionGranted() {
