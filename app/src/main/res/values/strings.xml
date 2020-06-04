@@ -11,6 +11,7 @@
     <string name="loading">로딩중</string>
     <string name="deleting">삭제중</string>
     <string name="delete">삭제</string>
+    <string name="change">변환</string>
     <string name="delete_success">삭제되었습니다.</string>
     <string name="delete_confirm">삭제하시겠습니까?</string>
     <string name="deleting_fail">삭제에 실패하였습니다.</string>
@@ -41,6 +42,8 @@
     <string name="need_write_permission_title">쓰기 권한</string>
     <string name="select">선택</string>
     <string name="select_gallery_or_photo">갤러리 또는 카메라를 선택해주세요.</string>
+    <string name="save_file_excel">엑셀파일로 변환하시겠습니까?</string>
+    <string name="send_at_email">이메일로 보내겠습니까?</string>
     <string name="delete_image">이미지 삭제</string>
     <string name="ask_delete_image">이미지를 삭제하시겠습니까?</string>
     <string name="need_write_permission">해당 기능을 사용하기 위해 쓰기 권한이 필요합니다.</string>
@@ -50,4 +53,12 @@
     <string name="image_cancel">취소 되었습니다.</string>
     <string name="image_over_select_warning">장 이상 선택하실 수 없습니다.</string>
     <string name="none">없음</string>
+    
+    <string name="excel_company_name">업체명</string>
+    <string name="excel_accident_date">발생일자</string>
+    <string name="excel_construct_type">공사종류</string>
+    <string name="excel_delay_cause_one">지연원인1</string>
+    <string name="excel_delay_cause_two">지연원인2</string>
+    <string name="excel_real_start_date">실제시작일</string>
+    <string name="excel_real_end_date">실제완료일</string>
 </resources>

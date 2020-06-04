@@ -22,13 +22,13 @@ public class RetrievePresenter {
     }
 
     public void getReport() {
-        retrieveView.showProgress(R.string.uploading);
+        retrieveView.showProgress(R.string.loading);
         Disposable reportDisposable = reportInteractor.loadAllReport().
                 subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(reportList -> {
-                            retrieveView.hideProgress();
                             retrieveView.showReport(reportList);
+                            retrieveView.hideProgress();
                         }
                         , error -> {
                             retrieveView.showMessage(R.string.load_failed);
