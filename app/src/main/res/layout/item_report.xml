@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/report_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="10dp"
+    android:weightSum="20"
     android:background="@drawable/bg_gray7_rectangle">
 
+    <LinearLayout
+        android:id="@+id/report_linear_layout"
+        android:layout_weight="18"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -140,7 +147,21 @@
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/report_select_linear_layout"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="match_parent">
 
+        <RadioButton
+            android:id="@+id/report_select_radio_button"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
 </LinearLayout>

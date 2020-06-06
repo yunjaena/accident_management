@@ -31,6 +31,7 @@ import com.yunjaena.accident_management.ui.retrieve.adapter.ReportAdapter;
 import com.yunjaena.accident_management.ui.retrieve.presenter.RetrieveContract;
 import com.yunjaena.accident_management.ui.retrieve.presenter.RetrievePresenter;
 import com.yunjaena.accident_management.util.DateUtil;
+import com.yunjaena.accident_management.util.FileUtil;
 import com.yunjaena.core.activity.ActivityBase;
 import com.yunjaena.core.recyclerview.RecyclerViewClickListener;
 import com.yunjaena.core.toast.ToastUtil;
@@ -127,7 +128,6 @@ public class RetrieveActivity extends ActivityBase implements RetrieveContract.V
     }
 
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -177,6 +177,7 @@ public class RetrieveActivity extends ActivityBase implements RetrieveContract.V
         selectReportItem.clear();
         for (Report report : allReportItem) {
             if (report.getSavePath() == savePathPosition && !report.isDelete()) {
+                report.setSelect(false);
                 selectReportItem.add(report);
             }
         }
@@ -195,8 +196,18 @@ public class RetrieveActivity extends ActivityBase implements RetrieveContract.V
             case R.id.action_change:
                 showSaveExcelFileDialog();
                 break;
+            case R.id.action_select_cancel:
+                cancelSelectRadioButton();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void cancelSelectRadioButton() {
+        for (int i = 0; i < selectReportItem.size(); i++) {
+            selectReportItem.get(i).setSelect(false);
+            reportAdapter.notifyDataSetChanged();
+        }
     }
 
     public void showSaveExcelFileDialog() {
@@ -234,15 +245,15 @@ public class RetrieveActivity extends ActivityBase implements RetrieveContract.V
     }
 
     public void saveWorkBookFile() {
+        String fileName = "k-cm" + DateUtil.getCurrentDateWithUnderBar() + ".xls";
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
-            saveFile();
+            saveFile(fileName);
         else
-            saveFileVersionQ();
+            saveFileVersionQ(fileName);
     }
 
 
-    public void saveFile() {
-        String fileName = "k-cm" + DateUtil.getCurrentDateWithOutTimeWithOutDot() + ".xls";
+    public void saveFile(String fileName) {
         File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         File xls = new File(dir, fileName);
         try {
@@ -256,11 +267,10 @@ public class RetrieveActivity extends ActivityBase implements RetrieveContract.V
         showEmailSendDialog(fileName);
     }
 
-    public void saveFileVersionQ() {
-        String fileName = "k-cm" + DateUtil.getCurrentDateWithOutTimeWithOutDot() + ".xls";
+    public void saveFileVersionQ(String fileName) {
         Intent exportIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         exportIntent.addCategory(Intent.CATEGORY_OPENABLE);
-        exportIntent.setType("text/csv");
+        exportIntent.setType("application/excel");
         exportIntent.putExtra(Intent.EXTRA_TITLE, fileName);
         startActivityForResult(exportIntent, FILE_EXPORT_REQUEST_CODE);
     }
@@ -299,13 +309,16 @@ public class RetrieveActivity extends ActivityBase implements RetrieveContract.V
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.select).setMessage(R.string.send_at_email);
         builder.setPositiveButton(R.string.okay, (dialog, id) -> {
-            Uri uri = Uri.parse("mailto:");
-            Intent it = new Intent(Intent.ACTION_SENDTO, uri);
-            it.putExtra(Intent.EXTRA_SUBJECT, "excel file 전송");
-            it.putExtra(Intent.EXTRA_STREAM, fileUri);
-            startActivity(it);
+            try {
+                Uri uri = Uri.parse("mailto:");
+                Intent it = new Intent(Intent.ACTION_SENDTO, uri);
+                it.putExtra(Intent.EXTRA_SUBJECT, "excel file 전송");
+                it.putExtra(Intent.EXTRA_STREAM, FileUtil.getFilePathFromUri(fileUri, getApplicationContext()));
+                startActivity(it);
+            } catch (IOException e) {
+                ToastUtil.getInstance().makeShort(R.string.upload_failed);
+            }
         });
-
         builder.setNegativeButton(R.string.cancel, null);
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
@@ -327,12 +340,16 @@ public class RetrieveActivity extends ActivityBase implements RetrieveContract.V
         cell = row.createCell(4);
         cell.setCellValue(getResources().getString(R.string.excel_delay_cause_two));
         cell = row.createCell(5);
-        cell.setCellValue(getResources().getString(R.string.excel_real_start_date));
+        cell.setCellValue(getResources().getString(R.string.excel_expect_start_date));
         cell = row.createCell(6);
+        cell.setCellValue(getResources().getString(R.string.excel_expect_end_date));
+        cell = row.createCell(7);
+        cell.setCellValue(getResources().getString(R.string.excel_real_start_date));
+        cell = row.createCell(8);
         cell.setCellValue(getResources().getString(R.string.excel_real_end_date));
         int rowIndex = 1;
         for (Report report : allReportItem) {
-            if (!report.isDelete()) {
+            if (!report.isDelete() && report.isSelect()) {
                 row = sheet1.createRow(rowIndex++);
                 cell = row.createCell(0);
                 cell.setCellValue(report.getCompanyName());
@@ -347,6 +364,10 @@ public class RetrieveActivity extends ActivityBase implements RetrieveContract.V
                 cell = row.createCell(5);
                 cell.setCellValue(report.getRealStartDate());
                 cell = row.createCell(6);
+                cell.setCellValue(report.getRealEndDate());
+                cell = row.createCell(7);
+                cell.setCellValue(report.getRealStartDate());
+                cell = row.createCell(8);
                 cell.setCellValue(report.getRealEndDate());
             }
         }

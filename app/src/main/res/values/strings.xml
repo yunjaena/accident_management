@@ -16,6 +16,8 @@
     <string name="modify_complete">수정 완료</string>
     <string name="modify_fail">수정 실패</string>
     <string name="change">변환</string>
+    <string name="select_cancel">선택취소</string>
+    <string name="select_change">선택변환</string>
     <string name="delete_success">삭제되었습니다.</string>
     <string name="delete_confirm">삭제하시겠습니까?</string>
     <string name="deleting_fail">삭제에 실패하였습니다.</string>
@@ -69,6 +71,8 @@
     <string name="excel_construct_type">공사종류</string>
     <string name="excel_delay_cause_one">지연원인1</string>
     <string name="excel_delay_cause_two">지연원인2</string>
+    <string name="excel_expect_start_date">공사시작예정일</string>
+    <string name="excel_expect_end_date">공사완료예정일</string>
     <string name="excel_real_start_date">실제시작일</string>
     <string name="excel_real_end_date">실제완료일</string>
 </resources>

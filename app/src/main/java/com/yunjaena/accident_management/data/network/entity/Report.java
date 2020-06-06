@@ -38,6 +38,8 @@ public class Report implements Serializable {
     public List<String> imageFileName;
     @Exclude
     public List<Bitmap> imageBitmap;
+    @Exclude
+    private boolean isSelect;
     public boolean isDelete;
 
     public Report() {
@@ -258,6 +260,19 @@ public class Report implements Serializable {
 
     public String getExpectEndDate() {
         return expectEndDate;
+    }
+
+
+    public void setExpectEndDate(String expectEndDate) {
+        this.expectEndDate = expectEndDate;
+    }
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
     }
 
     @Exclude

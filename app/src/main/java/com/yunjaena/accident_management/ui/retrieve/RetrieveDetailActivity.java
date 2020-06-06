@@ -286,15 +286,15 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
     }
 
     public void saveWorkBookFile() {
+        String fileName = "k-cm" + DateUtil.getCurrentDateWithUnderBar() + ".xls";
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
-            saveFile();
+            saveFile(fileName);
         else
-            saveFileVersionQ();
+            saveFileVersionQ(fileName);
     }
 
 
-    public void saveFile() {
-        String fileName = "k-cm" + DateUtil.getCurrentDateWithOutTimeWithOutDot() + ".xls";
+    public void saveFile(String fileName) {
         File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         File xls = new File(dir, fileName);
         try {
@@ -308,8 +308,7 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
         showEmailSendDialog(fileName);
     }
 
-    public void saveFileVersionQ() {
-        String fileName = "k-cm" + DateUtil.getCurrentDateWithOutTimeWithOutDot() + ".xls";
+    public void saveFileVersionQ(String fileName) {
         Intent exportIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         exportIntent.addCategory(Intent.CATEGORY_OPENABLE);
         exportIntent.setType("application/excel");
@@ -384,8 +383,12 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
         cell = row.createCell(4);
         cell.setCellValue(getResources().getString(R.string.excel_delay_cause_two));
         cell = row.createCell(5);
-        cell.setCellValue(getResources().getString(R.string.excel_real_start_date));
+        cell.setCellValue(getResources().getString(R.string.excel_expect_start_date));
         cell = row.createCell(6);
+        cell.setCellValue(getResources().getString(R.string.excel_expect_end_date));
+        cell = row.createCell(7);
+        cell.setCellValue(getResources().getString(R.string.excel_real_start_date));
+        cell = row.createCell(8);
         cell.setCellValue(getResources().getString(R.string.excel_real_end_date));
         int rowIndex = 1;
         if (!reportSerial.isDelete()) {
@@ -404,6 +407,11 @@ public class RetrieveDetailActivity extends ActivityBase implements RetrieveDeta
             cell.setCellValue(reportSerial.getRealStartDate());
             cell = row.createCell(6);
             cell.setCellValue(reportSerial.getRealEndDate());
+            cell = row.createCell(7);
+            cell.setCellValue(reportSerial.getRealStartDate());
+            cell = row.createCell(8);
+            cell.setCellValue(reportSerial.getRealEndDate());
+
         }
         return wb;
     }

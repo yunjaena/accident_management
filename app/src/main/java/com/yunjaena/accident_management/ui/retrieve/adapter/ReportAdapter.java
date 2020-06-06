@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,13 +45,35 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
         holder.delayCauseTwoTextView.setText(causeTwo);
         holder.realStartTextView.setText(report.getRealStartDate());
         holder.realEndTextView.setText(report.getRealEndDate());
-        holder.reportLinearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (recyclerViewClickListener != null)
-                    recyclerViewClickListener.onClick(holder.reportLinearLayout, position);
-            }
+        holder.reportLinearLayout.setOnClickListener(v -> {
+            if (recyclerViewClickListener != null)
+                recyclerViewClickListener.onClick(holder.reportLinearLayout, position);
         });
+
+        if (reportList.get(position).isSelect()) {
+            holder.selectRadioButton.setChecked(true);
+        } else {
+            holder.selectRadioButton.setChecked(false);
+        }
+
+        holder.selectRadioButton.setOnClickListener(v ->
+                radioButtonClick(position, holder.selectRadioButton)
+        );
+
+        holder.selectLinearLayout.setOnClickListener(v -> {
+            radioButtonClick(position, holder.selectRadioButton);
+        });
+    }
+
+
+    private void radioButtonClick(int position, RadioButton radioButton){
+        if (reportList.get(position).isSelect()) {
+            radioButton.setChecked(false);
+            reportList.get(position).setSelect(false);
+        } else {
+            radioButton.setChecked(true);
+            reportList.get(position).setSelect(true);
+        }
     }
 
     @Override
@@ -63,13 +86,15 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView companyNameTextView;
-        public TextView constructionTypeTextView;
-        public TextView delayCauseOneTextView;
-        public TextView delayCauseTwoTextView;
-        public TextView realStartTextView;
-        public TextView realEndTextView;
-        public LinearLayout reportLinearLayout;
+        private TextView companyNameTextView;
+        private TextView constructionTypeTextView;
+        private TextView delayCauseOneTextView;
+        private TextView delayCauseTwoTextView;
+        private TextView realStartTextView;
+        private TextView realEndTextView;
+        private LinearLayout reportLinearLayout;
+        private RadioButton selectRadioButton;
+        private LinearLayout selectLinearLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,6 +105,8 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
             realStartTextView = itemView.findViewById(R.id.report_real_start_text_view);
             realEndTextView = itemView.findViewById(R.id.report_real_end_text_view);
             reportLinearLayout = itemView.findViewById(R.id.report_linear_layout);
+            selectRadioButton = itemView.findViewById(R.id.report_select_radio_button);
+            selectLinearLayout = itemView.findViewById(R.id.report_select_linear_layout);
         }
     }
 }
