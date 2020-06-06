@@ -25,6 +25,11 @@ public class DateUtil {
         return format.format(time);
     }
 
+    public static String getCurrentDateWithDot() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
+        Date time = new Date();
+        return format.format(time);
+    }
     public static String getCurrentDateWithOutTime() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
         Date time = new Date();

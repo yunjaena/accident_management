@@ -245,7 +245,7 @@ public class RetrieveActivity extends ActivityBase implements RetrieveContract.V
     }
 
     public void saveWorkBookFile() {
-        String fileName = "k-cm" + DateUtil.getCurrentDateWithUnderBar() + ".xls";
+        String fileName = "k-cm" + DateUtil.getCurrentDateWithDot() + ".xls";
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
             saveFile(fileName);
         else
