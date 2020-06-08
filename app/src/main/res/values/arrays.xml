@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="construction_type">
+        <item>가설공사</item>
+        <item>토공사 및 기초공사</item>
+        <item>철근콘크리트공사</item>
+        <item>철골공사</item>
+        <item>조적공사</item>
+        <item>목공사</item>
+        <item>기타공사</item>
+        <item>그 외 기타공사</item>
+    </string-array>
+
+    <string-array name="construction_specific_type_2">
+        <item>철근 공사</item>
+        <item>거푸집 공사</item>
+        <item>콘크리트 공사</item>
+    </string-array>
+
+    <string-array name="construction_specific_type_4">
+        <item>벽돌공사</item>
+        <item>블럭공사</item>
+        <item>석공사</item>
+    </string-array>
+
+    <string-array name="construction_specific_type_6">
+        <item>방수공사</item>
+        <item>지붕 및 홈통공사</item>
+        <item>미장공사 및 타일공사</item>
+        <item>도장공사</item>
+        <item>합성수지공사</item>
+        <item>창호, 유리, 금속공사</item>
+    </string-array>
+
+    <string-array name="delay_cause">
+        <item>재료</item>
+        <item>노무</item>
+        <item>장비</item>
+        <item>시공법</item>
+        <item>자금</item>
+        <item>관리</item>
+        <item>발주자</item>
+        <item>설계/감리</item>
+        <item>제3자</item>
+    </string-array>
+
+    <string-array name="delay_cause_specific_0">
+        <item>자재 활용계획 부족</item>
+        <item>자재 불량</item>
+    </string-array>
+
+    <string-array name="delay_cause_specific_1">
+        <item>노무 활용계획 부족</item>
+        <item>경험 부족(생산성 부족)</item>
+    </string-array>
+
+    <string-array name="delay_cause_specific_2">
+        <item>장비활용계획 부족</item>
+        <item>장비파손, 결함 및 부적당 장비</item>
+    </string-array>
+
+    <string-array name="delay_cause_specific_3">
+        <item>공법의 적정성</item>
+        <item>부적당한 시공 및 절차</item>
+    </string-array>
+
+    <string-array name="delay_cause_specific_4">
+        <item>기성자금계획 미흠</item>
+        <item>하도급 및 자재조달자에 대한 기성지급 및 현금화 지연</item>
+    </string-array>
+
+
+    <string-array name="delay_cause_specific_5">
+        <item>프로젝트의 실제상황과 계약조건의 불일치</item>
+        <item>타공종 간의 간섭 및 잘못된 시공,계획</item>
+        <item>하도급의 부실 및 부도</item>
+        <item>하도급 발주 지연</item>
+        <item>시공중의 안전사고</item>
+        <item>민원발생에 대한 예방 및 처리</item>
+        <item>현장통제 및 감독능력 부족</item>
+        <item>발주자, 설계자, 감리자 간의 협의 부족</item>
+        <item>설체계적인 현장공정관리의 미흡</item>
+    </string-array>
+
+    <string-array name="delay_cause_specific_6">
+        <item>공사 인허가 문제</item>
+        <item>발주자의 기성지급 지연 및 기성지급 절차의 까다로움</item>
+        <item>발주자 의사결정 지연</item>
+    </string-array>
+
+    <string-array name="delay_cause_specific_7">
+        <item>설계변경에 대한 처리지연</item>
+        <item>설계결함 및 생략</item>
+        <item>감리자 승인 지연</item>
+        <item>감감리자 능력 부족</item>
+    </string-array>
+
+    <string-array name="delay_cause_specific_8">
+        <item>정부정책의 변화(관련법규 변경)</item>
+        <item>노무분쟁/파업</item>
+        <item>기후조건(집중호우, 고온, 결빙 등)</item>
+    </string-array>
+
+
+    <string-array name="save_path">
+        <item>설계 변경 및 오류</item>
+        <item>계약 변경 및 위반</item>
+        <item>불가항적 사항</item>
+        <item>동시 지연 발생</item>
+    </string-array>
+
+
+</resources>
